@@ -3,7 +3,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, Float
 from sqlalchemy.orm import sessionmaker
 
-import ulmo
 import pandas as pd
 import numpy as np
 import urllib
