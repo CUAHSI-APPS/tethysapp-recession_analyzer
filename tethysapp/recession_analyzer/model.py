@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 import pandas as pd
 import numpy as np
-import urllib
+import urllib2
 from io import StringIO
 
 from .app import RecessionAnalyzer
@@ -29,7 +29,8 @@ class TimeSeries():
     def __init__(self,gage,start,stop):
         self.gage = gage
         dateparse = lambda x: pd.datetime.strptime(x, '%Y-%m-%d') # custom function that will be used to make our x axis ticks work right
-        response = urllib.request.urlopen('http://waterdata.usgs.gov/nwis/dv?cb_00060=on&format=rdb&site_no=' + gage + '&referred_module=sw&period=&begin_date='+start+'&end_date='+stop)
+
+        response = urllib2.urlopen('http://waterdata.usgs.gov/nwis/dv?cb_00060=on&format=rdb&site_no=' + gage + '&referred_module=sw&period=&begin_date='+start+'&end_date='+stop)
         print response
         tsv = response.read().decode("utf8")
         tsv = StringIO(tsv)
