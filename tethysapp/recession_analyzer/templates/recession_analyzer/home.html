@@ -1,25 +1,98 @@
 {% extends "recession_analyzer/base.html" %}
 {% load tethys_gizmos %}
-
 {% block app_content %}
-    <form method="post">
-    {% csrf_token %}
-    {% gizmo text_input gages %}
-    {% gizmo date_picker start %}
-    {% gizmo date_picker stop %}
-    {% gizmo toggle_switch concave_down_toggle %}    
-    {% gizmo toggle_switch fitting %}  
-    {% gizmo range_slider min_length %}
-    {% gizmo range_slider rec_sens %} 
-    {% gizmo range_slider antecedent_moisture %} 
-    {% gizmo range_slider lag_start %} 
-    {% gizmo button_group buttons %}
 
-    </form>
-    
-    {% if line_plot_view %}
-        {% gizmo plot_view line_plot_view %}
-        {% gizmo plot_view scatter_plot_view %}
-    {% endif %}    
-    
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script type="text/javascript">
+    function showValue(newValue,rangex)
+    {
+        document.getElementById(rangex).innerHTML=newValue;
+    }
+</script>
+<script type="text/javascript">
+    function updatePlot(gage) {
+    abJsonString = "{{ abJson }}".replace(/&quot;/g,"\"");
+    abJson = JSON.parse(abJsonString);
+    abCurr = abJson[gage];
+    avar = abCurr["a"];
+    bvar = abCurr["b"];
+    var abpairs = avar.map(function (e, i) {
+        return [avar[i], bvar[i]];
+    });
+
+    $('#ab-scatter').highcharts({
+        chart: {
+            type: 'scatter'
+        },
+        title: {
+            text: 'ab Test'
+        },
+        xAxis: {
+                type: 'logarithmic',
+                tickLength: 10
+                },
+        yAxis: {
+            title: {
+                text: 'b'
+            }
+        },
+        series: [{data:abpairs}]
+    });
+    }
+</script>
+
+<div class="row">
+    <div class="col-md-3">
+        <form method="post" >
+            <input type="submit" name="analyze" class="btn btn-primary" value="Analyze recessions">
+            {% gizmo select_input gages_options %}
+            {% gizmo date_picker start_options %}
+            {% gizmo date_picker stop_options %}
+            {% gizmo toggle_switch concave_options %}
+            {% gizmo toggle_switch nonlinear_fitting_options %}
+
+
+        {% csrf_token %}
+            <br/>
+            <strong> Peak extract = <span id="rec_sense_initial">{{ rec_sense_initial }} </span></strong>
+            {% gizmo range_slider rec_sense_options %}
+            <br/>
+            <strong>A.S.I. factor = <span id="antecedent_moisture_initial">{{ antecedent_moisture_initial }} </span></strong>
+            {% gizmo range_slider antecedent_moisture_options %}
+            <br/>
+            <strong>   Lag rec start = <text id="lag_start_initial">{{ lag_start_initial }} </text></strong>
+            {% gizmo range_slider lag_start_options %}
+            <br/>
+            <strong>   Min recession len = <text id="min_length_initial">{{ min_length_initial }}</text></strong>
+            {% gizmo range_slider min_length_options %}
+        </form>
+    </div>
+    {% if submitted %}
+        <div class="col-md-5">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-xs-7">
+                        {% gizmo select_input select_gage_options %}
+                    </div>
+                </div>
+            </form>
+            {% gizmo plot_view scatter_plot_view %}
+            {% gizmo plot_view line_plot_view %}
+        </div>
+    {% endif %}
+        <div class="col-md-4">
+            <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        </div>
+</div>
+
+
+
 {% endblock %}
+
+{% block scripts %}
+<link href='https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css' rel="stylesheet">
+{{ block.super }}
+{% endblock %}
+

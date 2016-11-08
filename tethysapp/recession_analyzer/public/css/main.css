@@ -1,0 +1,56 @@
+#app-content-wrapper.show-nav #app-content {
+    padding-right: 0;
+    -webkit-transform: none;
+       -moz-transform: none;
+        -ms-transform: none;
+         -o-transform: none;
+}
+
+#app-content-wrapper.show-nav #app-content #app-actions {
+    padding: 20px 50px;
+}
+
+.wrapper {
+  background: #FFFFFF;
+}
+
+.add-on.slider-after {
+    width: 40px;
+}
+
+.add-on.slider-before {
+    width: 40px;
+}
+
+.slider-input {
+    width: 170px;
+}
+
+.slider-value {
+    margin-left: -25px;
+}
+
+/*CSS for the slider boxes*/
+.form-group {
+  display: inline-block;
+  width: 80%;
+}
+
+.sliderBox {
+  width: 18%;
+  height: 34px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #eee;
+  display: inline-block;
+  text-align: center;
+  vertical-align: top;
+  margin-top: 25px;
+  padding: 5px;
+}
+
+.sliderText {
+  vertical-align: center;
+  margin-top: 17px;
+  font-weight: bold;
+}

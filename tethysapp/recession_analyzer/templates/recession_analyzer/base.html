@@ -12,16 +12,17 @@
 {# The name you provided in your app.py is accessible through the tethys_app.name context variable #}
 {% block app_title %}{{ tethys_app.name }}{% endblock %}
 
-{% block app_navigation_items %}
-  <li class="active"><a href="">Home</a></li>
-  <li><a href="">Jobs</a></li>
-  <li><a href="">Results</a></li>
-{% endblock %}
-
 {% block app_content %}
 {% endblock %}
 
-{% block app_actions %}
+{% block exit_button_override %}
+{% endblock %}
+
+{% block app_navigation_toggle_override %}
+{% endblock %}
+
+
+{% block app_navigation_override %}
 {% endblock %}
 
 {% block content_dependent_styles %}
