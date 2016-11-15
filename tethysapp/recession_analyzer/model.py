@@ -239,15 +239,19 @@ def createAbJson(sitesDict,gageNames):
     #for each gage, create abtuples list
     #store in list of abpairs dictionary
     #json'ize that bizness
-    abDict = {};
+    abDict = {}
     for gage in gageNames:
-        ts = sitesDict[gage];
-        avals = ts['A0n'][ts['A0n'] > 0 ].values;
-        bvals = ts['Bn'][ts['Bn']>0].values;
-        bvals = np.ndarray.tolist(bvals); avals = np.ndarray.tolist(avals)
-        abCurrDict ={}; abCurrDict['b']=bvals; abCurrDict['a']=avals;
+        ts = sitesDict[gage]
+        avals = ts['A0n'][ts['A0n'] > 0].values
+        bvals = ts['Bn'][ts['Bn'] > 0].values
+        bvals = np.ndarray.tolist(bvals)
+        avals = np.ndarray.tolist(avals)
+
+        abCurrDict = {}
+        abCurrDict['b'] = bvals
+        abCurrDict['a'] = avals
 
         #abDict[gage]=[[x,y] for x,y in zip(avals,bvals)];
-        abDict[gage]=abCurrDict;
+        abDict[gage] = abCurrDict
 
     return json.dumps(abDict)

@@ -12,40 +12,67 @@
 </script>
 <script type="text/javascript">
     function updatePlot(gage) {
-    abJsonString = "{{ abJson }}".replace(/&quot;/g,"\"");
-    abJson = JSON.parse(abJsonString);
-    abCurr = abJson[gage];
-    avar = abCurr["a"];
-    bvar = abCurr["b"];
-    var abpairs = avar.map(function (e, i) {
-        return [avar[i], bvar[i]];
-    });
+        abJsonString = "{{ abJson }}".replace(/&quot;/g, "\"");
+        abJson = JSON.parse(abJsonString);
+        abCurr = abJson[gage];
+        avar = abCurr["a"];
+        bvar = abCurr["b"];
 
-    $('#ab-scatter').highcharts({
-        chart: {
-            type: 'scatter'
-        },
-        title: {
-            text: 'ab Test'
-        },
-        xAxis: {
-                type: 'logarithmic',
-                tickLength: 10
-                },
-        yAxis: {
+        var abpairs = avar.map(function (e, i) {
+            return [avar[i], bvar[i]];
+        });
+
+        $('#ab-scatter').highcharts({
+            chart: {
+                type: 'scatter'
+            },
             title: {
-                text: 'b'
-            }
-        },
-        series: [{data:abpairs}]
-    });
+                text: 'Recession parameters'
+            },
+            xAxis: {
+                    type: 'logarithmic',
+                    tickLength: 10
+            },
+            yAxis: {
+                title: {
+                    text: 'b'
+                }
+            },
+            series: [{data: abpairs}]
+        });
+
+        seriesJsonString = "{{ seriesJson }}".replace(/&quot;/g, "\"");
+        seriesJson = JSON.parse(seriesJsonString);
+        timeseries = seriesJson[gage];
+
+
+        $('#hydrograph-plot').highcharts({
+            chart: {
+                Zoomtype: 'xy'
+            },
+            title: {
+                text: 'Flow time series'
+            },
+            xAxis: {
+                type: 'datetime',
+                tickLength: 10
+            },
+            yAxis: {
+                title: {
+                    text: 'Discharge [cfs]'
+                }
+            },
+            series: timeseries
+        })
+
     }
 </script>
 
 <div class="row">
     <div class="col-md-3">
         <form method="post" >
-            <input type="submit" name="analyze" class="btn btn-primary" value="Analyze recessions">
+            <input type="submit" name="analyze" class="btn btn-primary" value="Analyze recessions"><br>
+            <br>
             {% gizmo select_input gages_options %}
             {% gizmo date_picker start_options %}
             {% gizmo date_picker stop_options %}
