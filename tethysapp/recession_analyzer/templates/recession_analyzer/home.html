@@ -6,10 +6,14 @@
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script type="text/javascript">
-    var gages = ['11476500', '11477000'];
+    var gages = [];
 
     function showValue(newValue, rangex) {
         document.getElementById(rangex).innerHTML=newValue;
+    }
+
+    function setGages(gagesArray) {
+        gages = gagesArray;
     }
 
     function updateSeries(currGage, type) {
@@ -47,13 +51,13 @@
             <strong> Peak extract = <span id="rec_sense_initial">{{ rec_sense_initial }} </span></strong>
             {% gizmo range_slider rec_sense_options %}
             <br/>
-            <strong>A.S.I. factor = <span id="antecedent_moisture_initial">{{ antecedent_moisture_initial }} </span></strong>
+            <strong> A.S.I. factor = <span id="antecedent_moisture_initial">{{ antecedent_moisture_initial }} </span></strong>
             {% gizmo range_slider antecedent_moisture_options %}
             <br/>
-            <strong>   Lag rec start = <text id="lag_start_initial">{{ lag_start_initial }} </text></strong>
+            <strong> Lag rec start = <text id="lag_start_initial">{{ lag_start_initial }} </text></strong>
             {% gizmo range_slider lag_start_options %}
             <br/>
-            <strong>   Min recession len = <text id="min_length_initial">{{ min_length_initial }}</text></strong>
+            <strong> Min recession len = <text id="min_length_initial">{{ min_length_initial }}</text></strong>
             {% gizmo range_slider min_length_options %}
         </form>
     </div>
@@ -87,10 +91,10 @@
         </div>
     {% endif %}
     <script type="text/javascript">
-                    /* var jsonString = "{{ gage_json }}".replace(/&quot;/g, "\"");
-                    var workingJson = JSON.parse(jsonString);
-                    setGages(workingJson); */
-                    updatePlots(gages[0]);
+        var jsonString = "{{ gage_json }}".replace(/&quot;/g, "\"");
+        var workingJson = JSON.parse(jsonString);
+        setGages(workingJson);
+        updatePlots(gages[0]);
     </script>
 </div>
 
