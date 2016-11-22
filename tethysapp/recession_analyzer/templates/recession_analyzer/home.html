@@ -2,69 +2,31 @@
 {% load tethys_gizmos %}
 {% block app_content %}
 
+
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script type="text/javascript">
-    function showValue(newValue,rangex)
-    {
+    var gages = ['11476500', '11477000'];
+
+    function showValue(newValue, rangex) {
         document.getElementById(rangex).innerHTML=newValue;
     }
-</script>
-<script type="text/javascript">
-    function updatePlot(gage) {
-        abJsonString = "{{ abJson }}".replace(/&quot;/g, "\"");
-        abJson = JSON.parse(abJsonString);
-        abCurr = abJson[gage];
-        avar = abCurr["a"];
-        bvar = abCurr["b"];
 
-        var abpairs = avar.map(function (e, i) {
-            return [avar[i], bvar[i]];
-        });
+    function updateSeries(currGage, type) {
+        for (i = 0; i < gages.length; i++) {
+            var x = document.getElementById(type + gages[i]);
+            x.style.visibility = 'hidden';
+            x.style.display = 'none';
+        }
+        var y = document.getElementById(type + currGage);
+        y.style.visibility = 'visible';
+        y.style.display = 'block';
+    }
 
-        $('#ab-scatter').highcharts({
-            chart: {
-                type: 'scatter'
-            },
-            title: {
-                text: 'Recession parameters'
-            },
-            xAxis: {
-                    type: 'logarithmic',
-                    tickLength: 10
-            },
-            yAxis: {
-                title: {
-                    text: 'b'
-                }
-            },
-            series: [{data: abpairs}]
-        });
-
-        seriesJsonString = "{{ seriesJson }}".replace(/&quot;/g, "\"");
-        seriesJson = JSON.parse(seriesJsonString);
-        timeseries = seriesJson[gage];
-
-
-        $('#hydrograph-plot').highcharts({
-            chart: {
-                Zoomtype: 'xy'
-            },
-            title: {
-                text: 'Flow time series'
-            },
-            xAxis: {
-                type: 'datetime',
-                tickLength: 10
-            },
-            yAxis: {
-                title: {
-                    text: 'Discharge [cfs]'
-                }
-            },
-            series: timeseries
-        })
-
+    function updatePlots(gage) {
+        updateSeries(gage, 'plot');
+        updateSeries(gage, 'AB');
+        updateSeries(gage, 'table');
     }
 </script>
 
@@ -96,22 +58,40 @@
         </form>
     </div>
     {% if submitted %}
-        <div class="col-md-5">
+        <div class="col-md-9">
             <form method="post">
                 {% csrf_token %}
                 <div class="row">
-                    <div class="col-xs-7">
+                    <div class="col-xs-5">
                         {% gizmo select_input select_gage_options %}
                     </div>
                 </div>
+                {% for plot in scatter_plot_view %}
+                    <div class="row">
+                        <div class="col-md-6" id="AB{{ plot.attributes.id }}">
+                            {% gizmo plot_view plot %}
+                        </div>
+                        <div class="col-md-6" id="table{{ plot.attributes.id }}">
+                            {% gizmo table_view ab_table %}
+                        </div>
+                    </div>
+                {% endfor %}
+                {% for plot in line_plot_view %}
+                    <div class="row">
+                        <div class="col-md-12" id="plot{{ plot.attributes.id }}">
+                            {% gizmo plot_view plot %}
+                        </div>
+                    </div>
+                {% endfor %}
             </form>
-            {% gizmo plot_view scatter_plot_view %}
-            {% gizmo plot_view line_plot_view %}
         </div>
     {% endif %}
-        <div class="col-md-4">
-            <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-        </div>
+    <script type="text/javascript">
+                    /* var jsonString = "{{ gage_json }}".replace(/&quot;/g, "\"");
+                    var workingJson = JSON.parse(jsonString);
+                    setGages(workingJson); */
+                    updatePlots(gages[0]);
+    </script>
 </div>
 
 
