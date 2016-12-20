@@ -72,6 +72,7 @@ def recessionExtract(gageName, start, stop, ante=10, alph=0.90, window=3,
         d['Bn'] = np.nan
         d['A0n'] = np.nan
         d['api'] = np.nan
+        d['qn'] = np.nan
 
         for i in np.arange(len(datesMax) - 1):
             recStart = datesMax[i]
@@ -123,11 +124,12 @@ def recessionExtract(gageName, start, stop, ante=10, alph=0.90, window=3,
 
         ## DRALLE: SHOULD WE SPLIT THIS INTO TWO DICTIONARIES? ONE FOR THE TIME SERIES STUFF
         ## AND ANOTHER FOR THE RECESSION PARAMETERS STUFF?
-        a0vec = BergnerZouhar(afitVec, bfitVec)
+        a0vec, q0vec = BergnerZouhar(afitVec, bfitVec)
         d['An'].loc[startVec] = afitVec
         d['Bn'].loc[startVec] = bfitVec
         d['api'].loc[startVec] = apiVec
         d['A0n'].loc[startVec] = a0vec
+        d['qn'].loc[startVec] = q0vec
         sitesDict[site] = d
 
         startStopDict[site] = (startVec, endVec)
@@ -160,7 +162,7 @@ def BergnerZouhar(A, B):
     num = -np.sum((B - np.mean(B))*(np.log(A) - np.mean(np.log(A))))
     den = np.sum((B - np.mean(B))**2)
     q0 = np.exp(num/den)
-    return A*q0**(B - 1)
+    return A*q0**(B - 1), q0
 
 
 def peakdet(v, delta, x=None):
@@ -236,14 +238,13 @@ def peakdet(v, delta, x=None):
 
 
 def getTimeSeries(gage, start, stop):
-
     dataparse = lambda x: pd.datetime.strptime(x, '%Y-%m-%d')
     response = urllib.urlopen('http://waterdata.usgs.gov/nwis/dv?cb_00060=on&format=rdb&site_no='
-                              + gage + '&referred_module=sw&period=&begin_date='+start+'&end_date='+stop)
+                              + gage + '&referred_module=sw&period=&begin_date=' + start + '&end_date=' + stop)
     tsv = response.read().decode('utf8')
     tsv = StringIO(tsv)
 
-    df = pd.read_csv(tsv, sep='\t', header=26, index_col=False, parse_dates=[2], date_parser=dataparse, skiprows=[27])
+    df = pd.read_csv(tsv, sep='\t', header=27, index_col=False, parse_dates=[2], date_parser=dataparse, skiprows=[27])
     df.columns = ['Agency', 'Site', 'Time', 'Discharge', 'DischargeQualification']
     df = df[df.DischargeQualification == 'A']
     return df
@@ -256,12 +257,16 @@ def createAbJson(sitesDict, gageNames):
     abDict = {}
     for gage in gageNames:
         ts = sitesDict[gage]
-        avals = ts['A0n'][ts['A0n'] > 0].values
+        a0vals = ts['A0n'][ts['A0n'] > 0].values
         bvals = ts['Bn'][ts['Bn'] > 0].values
+        avals = ts['An'][ts['An'] > 0].values
+        qvals = ts['qn'][ts['qn'] > 0].values
         bvals = np.ndarray.tolist(bvals)
+        a0vals = np.ndarray.tolist(a0vals)
         avals = np.ndarray.tolist(avals)
+        qvals = np.ndarray.tolist(qvals)
 
-        abCurrDict = {'b': bvals, 'a': avals}
+        abCurrDict = {'b': bvals, 'a0': a0vals, 'a': avals, 'q': qvals}
 
         # abDict[gage]=[[x,y] for x,y in zip(avals,bvals)];
         abDict[gage] = abCurrDict
@@ -270,24 +275,45 @@ def createAbJson(sitesDict, gageNames):
     with open(new_file_path, "w") as outfile:
         json.dump(abDict, outfile, indent=4)
 
-    return json.dumps(abDict)
+    return json.dumps(abDict), abDict
 
 def createStatsInfo(abJson):
     json_readable = json.loads(abJson)
     outliers = []
-    data_arr = []
+    categories = []
+    series = []
+    stats = []
+    i = 0
     for gage in json_readable:
         data = json_readable[gage]
         for param in data:
-            low = np.percentile(data[param], 25)
-            med = np.percentile(data[param], 50)
-            high = np.percentile(data[param], 75)
-            iqr = high - low
-            for value in data[param]:
-                if value > ((1.5 * iqr) + high) or value < (low - (1.5 * iqr)):
-                    outliers.append(value)
-                    data[param].remove(value)
-            max = np.max(data[param])
-            min = np.min(data[param])
-            data_arr.append((str(gage), str(param), str("%.2f" % low), str("%.2f" % med), str("%.2f" % high)))
-    return {'data': data_arr, 'outliers': outliers}
+            if param == 'a0' or param == 'b':
+                low = np.percentile(data[param], 25)
+                med = np.percentile(data[param], 50)
+                high = np.percentile(data[param], 75)
+                iqr = high - low
+                for value in data[param]:
+                    if value > ((1.5 * iqr) + high) or value < (low - (1.5 * iqr)):
+                        outliers.append(value)
+                        data[param].remove(value)
+                max = np.max(data[param])
+                min = np.min(data[param])
+
+                categories.append(str(gage) + ', ' + str(param))
+                series.append({'name': 'Max', 'type': 'scatter', 'color': colorChooser(i),
+                               'marker': {'symbol': 'circle'}, 'data': [[max, i]]})
+                series.append({'name': 'Min', 'type': 'scatter', 'color': colorChooser(i),
+                               'marker': {'symbol': 'circle'}, 'data': [[min, i]]})
+                series.append({'name': 'IQR', 'color': colorChooser(i),
+                               'marker': {'symbol': 'circle'}, 'data': [[high, i], [low, i]]})
+                series.append({'name': 'Median', 'type': 'scatter', 'color': '#000000',
+                               'marker': {'symbol': 'square'}, 'data': [[med, i]]})
+                stats.append([str(gage), str(param), min, low, med, high, max])
+                i += 1
+    return {'series': series, 'categories': categories, 'outliers': outliers, 'stats': stats}
+
+def colorChooser(i):
+    if i % 2 == 0:
+        return '#f7a35c'
+    else:
+        return '#7cb5ec'

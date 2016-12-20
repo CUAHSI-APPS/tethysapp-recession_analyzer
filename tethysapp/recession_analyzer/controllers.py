@@ -33,7 +33,7 @@ def home(request):
     line_plot_view = []
     context = {}
     gage_json = ''
-    ab_table = buildStatTable({'data': '', 'outliers': ''})
+    ab_stats = buildStatPlot([], [])
 
     submitted = False
 
@@ -98,7 +98,24 @@ def home(request):
                                                     minLen=min_length, option=1,
                                                     nonlin_fit=nonlin_fit)
 
-        abJson = createAbJson(sitesDict, gage_names)
+        abJson, abDict = createAbJson(sitesDict, gage_names)
+
+        a = []
+        a0 = []
+        b = []
+        q = []
+        g = []
+        for gage in gage_names:
+            a = a + abDict[gage]['a']
+            a0 = a0 + abDict[gage]['a0']
+            b = b + abDict[gage]['b']
+            q = q + abDict[gage]['q']
+            g = g + [str(gage)] * len(abDict[gage]['a'])
+
+        dfinfo = np.array([g, a, a0, b, q])
+        df = pd.DataFrame(data=np.transpose(dfinfo), columns=['Gage', 'a', 'a0', 'b', 'q'])
+        new_file_path = "/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/workspaces/user_workspaces/andrew/df.csv"
+        df.to_csv(new_file_path)
 
         new_file_path = os.path.join(app_workspace.path, 'current_dict.p')
         pickle.dump(sitesDict, open(new_file_path, 'w'))
@@ -106,7 +123,7 @@ def home(request):
         new_file_path = os.path.join(app_workspace.path, 'current_startStop.p')
         pickle.dump(startStopDict, open(new_file_path, 'w'))
 
-        # FIXME: Add error here if len(gage_names) == 0
+        # FIXME: Throw error here if len(gage_names) == 0
 
         for gage in gage_names:
             ts = sitesDict[gage]
@@ -144,7 +161,7 @@ def home(request):
         #     json.dump(seriesDict, outfile, indent=4, cls=DateTimeEncoder)
 
         stats_dict = createStatsInfo(abJson)
-        ab_table = buildStatTable(stats_dict)
+        ab_stats = buildStatPlot(stats_dict['categories'], stats_dict['series'])
 
     concave_options = ToggleSwitch(name='concave_input', size='small',
                                    initial=concave_initial, display_text='Concave recessions')
@@ -189,7 +206,7 @@ def home(request):
                     'lag_start_options': lag_start_options,
                     'rec_sense_options': rec_sense_options,
                     'line_plot_view': line_plot_view,
-                    'ab_table': ab_table,
+                    'ab_stats': ab_stats,
                     'scatter_plot_view': scatter_plot_view,
                     'select_gage_options': select_gage_options,
                     'abJson': abJson,
@@ -293,12 +310,56 @@ def buildRecParamPlot(tuplelist, name):
                     height='300px',
                     attributes='id=' + name)
 
-def buildStatTable(stats_info):
-    return TableView(hover=True,
-                     column_names=('Gage', 'Parameter', '25th', '50th', '75th'),
-                     rows=stats_info['data'],
-                     bordered=True,
-                     condensed=True)
+# def buildStatTable(stats_info):
+#     return TableView(hover=True,
+#                      column_names=('Gage', 'Parameter', '25th', '50th', '75th'),
+#                      rows=stats_info['data'],
+#                      bordered=True,
+#                      condensed=True)
+
+def buildStatPlot(categories, series):
+    stats_highchart = {
+        'chart': {
+            'inverted': True,
+            'zoomType': 'xy'
+        },
+        'title': {
+            'text': 'Boxplot'
+        },
+        'subtitle': {
+            'text': 'a-b values'
+        },
+        'xAxis': {
+            'reversed': False,
+            'title': {
+                'text': 'Value'
+            },
+            'type': 'logarithmic',
+            'maxPadding': 0.1,
+            'minPadding': 0.1
+        },
+        'yAxis': {
+            'title': {
+                'text': 'Gage Name'
+            },
+            'categories': categories,
+            'lineWidth': 1,
+            'gridLineWidth': 0
+        },
+        'tooltip': {
+            'headerFormat': '<b>{series.name}</b><br/>',
+            'pointFormat': '{point.x}'
+        },
+        'legend': {
+            'enabled': False
+        },
+        'series': series
+    }
+
+    return PlotView(highcharts_object=stats_highchart,
+                    width='33%',
+                    height='300px',
+                    attributes='id=')
 
 # def buildStatTable(stats_info):
 #     stat_table = {

@@ -16,6 +16,10 @@
         gages = gagesArray;
     }
 
+    function filename() {
+        return "{{ abJson }}".toJSON()
+    }
+
     function updateSeries(currGage, type) {
         for (i = 0; i < gages.length; i++) {
             var x = document.getElementById(type + gages[i]);
@@ -69,6 +73,10 @@
                     <div class="col-xs-5">
                         {% gizmo select_input select_gage_options %}
                     </div>
+                    <br>
+                        <a href="" download="proposed_file_name">
+                        <input type="button" class="btn btn-primary" value="Download as .csv">
+                        </a>
                 </div>
                 {% for plot in scatter_plot_view %}
                     <div class="row">
@@ -76,7 +84,7 @@
                             {% gizmo plot_view plot %}
                         </div>
                         <div class="col-md-6" id="table{{ plot.attributes.id }}">
-                            {% gizmo table_view ab_table %}
+                            {% gizmo plot_view ab_stats %}
                         </div>
                     </div>
                 {% endfor %}
