@@ -73,10 +73,14 @@
                     <div class="col-xs-5">
                         {% gizmo select_input select_gage_options %}
                     </div>
-                    <br>
-                        <a href="" download="proposed_file_name">
-                        <input type="button" class="btn btn-primary" value="Download as .csv">
-                        </a>
+                    <div class="col-xs-3">
+                        <br>
+                        <a href="{% url 'recession_analyzer:dataframe' %}" class="btn btn-primary">Download a-b data</a>
+                    </div>
+                    <div class="col-xs-3">
+                        <br>
+                        <a href="{% url 'recession_analyzer:flowdata' %}" class="btn btn-primary">Download flow rate data</a>
+                    </div>
                 </div>
                 {% for plot in scatter_plot_view %}
                     <div class="row">
@@ -84,7 +88,7 @@
                             {% gizmo plot_view plot %}
                         </div>
                         <div class="col-md-6" id="table{{ plot.attributes.id }}">
-                            {% gizmo plot_view ab_stats %}
+                            {% gizmo table_view ab_stats %}
                         </div>
                     </div>
                 {% endfor %}

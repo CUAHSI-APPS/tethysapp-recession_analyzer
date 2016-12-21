@@ -271,10 +271,6 @@ def createAbJson(sitesDict, gageNames):
         # abDict[gage]=[[x,y] for x,y in zip(avals,bvals)];
         abDict[gage] = abCurrDict
 
-    new_file_path = "/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/workspaces/user_workspaces/andrew/current_series_dict.txt"
-    with open(new_file_path, "w") as outfile:
-        json.dump(abDict, outfile, indent=4)
-
     return json.dumps(abDict), abDict
 
 def createStatsInfo(abJson):
@@ -298,6 +294,8 @@ def createStatsInfo(abJson):
                         data[param].remove(value)
                 max = np.max(data[param])
                 min = np.min(data[param])
+                if param == 'a0':
+                    param = 'a'
 
                 categories.append(str(gage) + ', ' + str(param))
                 series.append({'name': 'Max', 'type': 'scatter', 'color': colorChooser(i),
@@ -308,7 +306,7 @@ def createStatsInfo(abJson):
                                'marker': {'symbol': 'circle'}, 'data': [[high, i], [low, i]]})
                 series.append({'name': 'Median', 'type': 'scatter', 'color': '#000000',
                                'marker': {'symbol': 'square'}, 'data': [[med, i]]})
-                stats.append([str(gage), str(param), min, low, med, high, max])
+                stats.append([str(gage), str(param), "%.2f" % low, "%.2f" % med, "%.2f" % high])
                 i += 1
     return {'series': series, 'categories': categories, 'outliers': outliers, 'stats': stats}
 

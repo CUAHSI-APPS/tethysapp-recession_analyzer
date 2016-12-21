@@ -33,7 +33,7 @@ def home(request):
     line_plot_view = []
     context = {}
     gage_json = ''
-    ab_stats = buildStatPlot([], [])
+    ab_stats = buildStatTable({'stats': []})
 
     submitted = False
 
@@ -71,10 +71,6 @@ def home(request):
         ########################################
 
         app_workspace = RecessionAnalyzer.get_user_workspace(request.user)
-        new_file_path = os.path.join(app_workspace.path, 'current_series_dict.txt')
-        with open(new_file_path, "w") as file:
-            file.write(str(app_workspace))
-
         new_file_path = os.path.join(app_workspace.path, 'current_plot.txt')
         pickle.dump(request.POST, open(new_file_path[:-4] + '.p', 'w'))
         post = pickle.load(open(new_file_path[:-4] + '.p', 'r'))
@@ -105,6 +101,10 @@ def home(request):
         b = []
         q = []
         g = []
+        flow = np.array([])
+        time = np.array([], dtype='<U10')
+        gage_flow = []
+
         for gage in gage_names:
             a = a + abDict[gage]['a']
             a0 = a0 + abDict[gage]['a0']
@@ -112,16 +112,30 @@ def home(request):
             q = q + abDict[gage]['q']
             g = g + [str(gage)] * len(abDict[gage]['a'])
 
+            flow2 = sitesDict[gage][gage].values
+            flow = np.concatenate((flow, flow2), axis=0)
+            time2 = sitesDict[gage].index.strftime('%Y-%m-%d')
+            time = np.concatenate((time, time2), axis=0)
+            gage_flow = gage_flow + [str(gage)] * len(sitesDict[gage][gage])
+
         dfinfo = np.array([g, a, a0, b, q])
+        flow_info = np.array([gage_flow, time, flow])
         df = pd.DataFrame(data=np.transpose(dfinfo), columns=['Gage', 'a', 'a0', 'b', 'q'])
-        new_file_path = "/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/workspaces/user_workspaces/andrew/df.csv"
-        df.to_csv(new_file_path)
+        flow_df = pd.DataFrame(data=np.transpose(flow_info), columns=['Gage', 'Time', 'Flow rate'])
 
-        new_file_path = os.path.join(app_workspace.path, 'current_dict.p')
-        pickle.dump(sitesDict, open(new_file_path, 'w'))
+        new_file_path = "/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/templates/recession_analyzer/flowdata.html"
+        flow_df.to_html(new_file_path)
+        newline = '{% extends "recession_analyzer/base.html" %}\n{% load tethys_gizmos %}\n{% block app_content %}'
+        line_prepender(new_file_path, newline)
+        newline = '{% endblock %}'
+        line_appender(new_file_path, newline)
 
-        new_file_path = os.path.join(app_workspace.path, 'current_startStop.p')
-        pickle.dump(startStopDict, open(new_file_path, 'w'))
+        new_file_path = "/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/templates/recession_analyzer/dataframe.html"
+        df.to_html(new_file_path)
+        newline = '{% extends "recession_analyzer/base.html" %}\n{% load tethys_gizmos %}\n{% block app_content %}'
+        line_prepender(new_file_path, newline)
+        newline = '{% endblock %}'
+        line_appender(new_file_path, newline)
 
         # FIXME: Throw error here if len(gage_names) == 0
 
@@ -155,13 +169,8 @@ def home(request):
             tuplelist = zip(avals, bvals)
             scatter_plot_view.append(buildRecParamPlot(tuplelist=tuplelist, name=gage))
 
-        # seriesJson = json.dumps(seriesDict, cls=DateTimeEncoder)
-        # new_file_path = os.path.join(app_workspace.path, 'current_json.txt')
-        # with open(new_file_path, "w") as outfile:
-        #     json.dump(seriesDict, outfile, indent=4, cls=DateTimeEncoder)
-
         stats_dict = createStatsInfo(abJson)
-        ab_stats = buildStatPlot(stats_dict['categories'], stats_dict['series'])
+        ab_stats = buildStatTable(stats_dict)
 
     concave_options = ToggleSwitch(name='concave_input', size='small',
                                    initial=concave_initial, display_text='Concave recessions')
@@ -213,6 +222,19 @@ def home(request):
                     'seriesDict': seriesDict})
 
     return render(request, 'recession_analyzer/home.html', context)
+
+
+def line_prepender(filename, line):
+    with open(filename, 'r+') as f:
+        content = f.read()
+        f.seek(0, 0)
+        f.write(line.rstrip('\r\n') + '\n' + content)
+
+
+def line_appender(filename, line):
+    with open(filename, 'r+') as f:
+        f.read()
+        f.write('\n' + line.rstrip('\r\n') + '\n')
 
 
 def buildFlowTimeSeriesPlot(series, name):
@@ -310,12 +332,14 @@ def buildRecParamPlot(tuplelist, name):
                     height='300px',
                     attributes='id=' + name)
 
-# def buildStatTable(stats_info):
-#     return TableView(hover=True,
-#                      column_names=('Gage', 'Parameter', '25th', '50th', '75th'),
-#                      rows=stats_info['data'],
-#                      bordered=True,
-#                      condensed=True)
+
+def buildStatTable(stats_info):
+    return TableView(hover=True,
+                     column_names=('Gage', 'Parameter', '25th %', '50th %', '75th %'),
+                     rows=stats_info['stats'],
+                     bordered=True,
+                     condensed=True)
+
 
 def buildStatPlot(categories, series):
     stats_highchart = {
@@ -361,54 +385,25 @@ def buildStatPlot(categories, series):
                     height='300px',
                     attributes='id=')
 
-# def buildStatTable(stats_info):
-#     stat_table = {
-#         'chart': {
-#             'type': 'boxplot',
-#         },
-#         'title': {
-#             'text': 'AB Stats'
-#         },
-#
-#         'legend': {
-#             'enabled': False
-#         },
-#
-#         'xAxis': {
-#             'categories': stats_info['x_axis'],
-#             'title': {
-#                 'text': 'Experiment No.'
-#             }
-#         },
-#
-#         'yAxis': {
-#             'title': {
-#                 'text': 'Observations'
-#             },
-#         },
-#
-#         'series': [{
-#             'name': 'Observations',
-#             'data': [],
-#             'type': 'boxplot',
-#         }, {
-#             'name': 'Outlier',
-#             'color': 'gray',
-#             'type': 'scatter',
-#             #'data': stats_info['outliers'],
-#             'data': [],
-#             'marker': {
-#                 'fillColor': 'white',
-#                 'lineWidth': 1,
-#                 'lineColor': 'gray'
-#             }
-#         }]
-#     }
-#
-#     return PlotView(highcharts_object=stat_table,
-#                     width='100%',
-#                     height='300px',
-#                     attributes='id=ab-boxplot')
+
+@login_required()
+def dataframe(request):
+    """
+    Controller for dataframe page.
+    """
+
+    context = {}
+    return render(request, 'recession_analyzer/dataframe.html', context)
+
+
+@login_required()
+def flowdata(request):
+    """
+    Controller for dataframe page.
+    """
+
+    context = {}
+    return render(request, 'recession_analyzer/flowdata.html', context)
 
 
 class DateTimeEncoder(json.JSONEncoder):
