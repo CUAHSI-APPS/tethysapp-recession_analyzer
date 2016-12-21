@@ -19,14 +19,19 @@ def home(request):
     """
     Controller for the app home page.
     """
+    gages_initial = ['11477000', '11476500']
+    start_initial = '2000-01-01'
+    stop_initial = '2015-01-01'
     concave_initial = False
     nonlinear_fitting_initial = False
     rec_sense_initial = 1
     min_length_initial = 4
     antecedent_moisture_initial = 1
     lag_start_initial = 0
-    select_gage_options_initial = ['11476500']
-    select_gage_options_tuple = [('11476500', '11476500'), ('11477000', '11477000')]
+    # select_gage_options_initial = ['11476500']
+    select_gage_options_initial = ''
+    # select_gage_options_tuple = [('11476500', '11476500'), ('11477000', '11477000')]
+    select_gage_options_tuple = []
     abJson = ''
     seriesDict = {}
     scatter_plot_view = []
@@ -34,8 +39,21 @@ def home(request):
     context = {}
     gage_json = ''
     ab_stats = buildStatTable({'stats': []})
-
     submitted = False
+
+
+
+    sites = pd.read_csv('/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/public/huc_18.tsv', sep='\t', header=30,
+                        index_col=False, skiprows=[31])
+    sites = sites[sites.site_tp_cd == 'ST']
+    names = sites.station_nm
+
+    values = [str(x) for x in list(sites.site_no)]
+    text = [num + ' ' + name[0:20] for (num, name) in zip(values, names)]
+    gages_options_options = zip(text, values)
+    gages_options_options_dict = dict(zip(values, text))
+
+
 
     # "Analyze recessions" button has been pressed
     # this stores new set of analysis parameters
@@ -47,10 +65,8 @@ def home(request):
         # PRESERVE THE PREVIOUS STATE #
 
         gages_initial = request.POST.getlist("gages_input")
-          
-        print('\n\n\n\n\n')
-        print(gages_initial)
-        print(type(gages_initial))
+        start_initial = request.POST['start_input']
+        stop_initial = request.POST['stop_input']
         
         if 'concave_input' in request.POST:
             concave_initial = True
@@ -76,10 +92,10 @@ def home(request):
         post = pickle.load(open(new_file_path[:-4] + '.p', 'r'))
         
         submitted = True
-        gage_names = ['11476500', '11477000']
+        gage_names = post.getlist("gages_input")
         gage_json = json.dumps(gage_names)
-        start = '2000-01-01'
-        stop = '2015-01-01'
+        start = post['start_input']
+        stop = post['stop_input']
         rec_sense = post['rec_sense_input']
         min_length = post['min_length_input']
 
@@ -172,6 +188,26 @@ def home(request):
         stats_dict = createStatsInfo(abJson)
         ab_stats = buildStatTable(stats_dict)
 
+    gages_options = SelectInput(display_text='Select gage(s)',
+                                name='gages_input',
+                                multiple=True,
+                                options=gages_options_options,
+                                initial=[gages_options_options_dict[init] for init in gages_initial])
+
+    start_options = DatePicker(name='start_input',
+                               display_text='Start date',
+                               autoclose=True,
+                               format='yyyy-m-d',
+                               start_date='01/01/1910',
+                               initial=start_initial)
+
+    stop_options = DatePicker(name='stop_input',
+                              display_text='Stop date',
+                              autoclose=True,
+                              format='yyyy-m-d',
+                              start_date='01/01/1910',
+                              initial=stop_initial)
+
     concave_options = ToggleSwitch(name='concave_input', size='small',
                                    initial=concave_initial, display_text='Concave recessions')
 
@@ -219,7 +255,10 @@ def home(request):
                     'scatter_plot_view': scatter_plot_view,
                     'select_gage_options': select_gage_options,
                     'abJson': abJson,
-                    'seriesDict': seriesDict})
+                    'seriesDict': seriesDict,
+                    'gages_options': gages_options,
+                    'start_options': start_options,
+                    'stop_options': stop_options})
 
     return render(request, 'recession_analyzer/home.html', context)
 
