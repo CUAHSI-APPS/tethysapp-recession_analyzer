@@ -2,7 +2,7 @@ from tethys_sdk.gizmos import DatePicker, MapView, MVLayer, MVView, TextInput, B
     ScatterPlot, ToggleSwitch, RangeSlider, TimeSeries, PlotView, SelectInput, TableView
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .model import recessionExtract, createAbJson, createStatsInfo
+from .model import recessionExtract, createAbJson, createStatsInfo, getSite
 import pandas as pd
 import numpy as np
 from .app import RecessionAnalyzer
@@ -19,14 +19,18 @@ def home(request):
     """
     Controller for the app home page.
     """
+    gage_names = []
+    gage_names.append(getSite())
     concave_initial = False
     nonlinear_fitting_initial = False
     rec_sense_initial = 1
     min_length_initial = 4
     antecedent_moisture_initial = 1
     lag_start_initial = 0
-    select_gage_options_initial = ['11476500']
-    select_gage_options_tuple = [('11476500', '11476500'), ('11477000', '11477000')]
+    #select_gage_options_initial = ['11476500']
+    select_gage_options_initial = gage_names
+    #select_gage_options_tuple = [('11476500', '11476500'), ('11477000', '11477000')]
+    select_gage_options_tuple = [(getSite(), getSite())]
     abJson = ''
     seriesDict = {}
     scatter_plot_view = []
@@ -76,7 +80,7 @@ def home(request):
         post = pickle.load(open(new_file_path[:-4] + '.p', 'r'))
         
         submitted = True
-        gage_names = ['11476500', '11477000']
+        #gage_names = ['11476500', '11477000']
         gage_json = json.dumps(gage_names)
         start = '2000-01-01'
         stop = '2015-01-01'

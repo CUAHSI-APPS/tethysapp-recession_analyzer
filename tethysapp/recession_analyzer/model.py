@@ -8,6 +8,7 @@ import cPickle as pickle
 import simplejson as json
 from django import template
 from django.utils.safestring import mark_safe
+from lxml import etree
 
 import pandas as pd
 import time
@@ -26,7 +27,7 @@ def recessionExtract(gageName, start, stop, ante=10, alph=0.90, window=3,
     sitesDict = {}
     startStopDict = {}
     for site in gageName:
-        d = getTimeSeries(site, start, stop)
+        d = getTimeSeries()
         dateandtime = pd.to_datetime(d['Time'])
         d = pd.DataFrame(d['Discharge'].values, columns=[site], index=pd.DatetimeIndex(dateandtime))
         selector = (d[site].max() - d[site].min()) / selectivity
@@ -237,16 +238,71 @@ def peakdet(v, delta, x=None):
     return array(maxtab), array(mintab)
 
 
-def getTimeSeries(gage, start, stop):
-    dataparse = lambda x: pd.datetime.strptime(x, '%Y-%m-%d')
-    response = urllib.urlopen('http://waterdata.usgs.gov/nwis/dv?cb_00060=on&format=rdb&site_no='
-                              + gage + '&referred_module=sw&period=&begin_date=' + start + '&end_date=' + stop)
-    tsv = response.read().decode('utf8')
-    tsv = StringIO(tsv)
+def getSite():
+    tree = etree.parse('/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/public/Elder_C_2000-2017.xml')
+    root = tree.getroot()
 
-    df = pd.read_csv(tsv, sep='\t', header=27, index_col=False, parse_dates=[2], date_parser=dataparse, skiprows=[27])
-    df.columns = ['Agency', 'Site', 'Time', 'Discharge', 'DischargeQualification']
-    df = df[df.DischargeQualification == 'A']
+    for element in root.iter():
+        if '}' in element.tag:
+            bracket_lock = element.tag.index('}')  # The namespace in the tag is enclosed in {}.
+            tag = element.tag[bracket_lock + 1:]  # Takes only actual tag, no namespace
+            if tag == 'siteName':
+                return element.text
+
+def getTimeSeries():
+    tree = etree.parse('/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/public/Elder_C_2000-2017.xml')
+    root = tree.getroot()
+    nodata = "-9999"  # default NoData value. The actual NoData value is read from the XML noDataValue tag
+    x_value = []
+    y_value = []
+    site_names = []
+
+    for element in root.iter():
+        if '}' in element.tag:
+            # print element.tag
+            bracket_lock = element.tag.index('}')  # The namespace in the tag is enclosed in {}.
+            tag = element.tag[bracket_lock + 1:]  # Takes only actual tag, no namespace
+            if tag == 'siteName':
+                site_name = element.text
+
+    for element in root.iter():
+        if '}' in element.tag:
+            # print element.tag
+            bracket_lock = element.tag.index('}')  # The namespace in the tag is enclosed in {}.
+            tag = element.tag[bracket_lock + 1:]  # Takes only actual tag, no namespace
+            if tag == 'value':
+                # print element.attrib
+                try:
+                    n = element.attrib['dateTimeUTC']
+                except:
+                    n = element.attrib['dateTime']
+
+                v = element.text
+                if v == nodata:
+                    value = None
+                    x_value.append(n)
+                    y_value.append(value)
+                    site_names.append(site_name)
+                else:
+                    v = float(element.text)
+                    x_value.append(n)
+                    y_value.append(v)
+                    site_names.append(site_name)
+
+    dates = pd.to_datetime(x_value, format='%Y-%m-%d')
+    df = pd.DataFrame({'Site': site_names, 'Time': dates, 'Discharge': y_value})
+    # df.to_csv('/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/public/currentdata.csv')
+    #
+    # dataparse = lambda x: pd.datetime.strptime(x, '%Y-%m-%d')
+    # response = urllib.urlopen('http://waterdata.usgs.gov/nwis/dv?cb_00060=on&format=rdb&site_no='
+    #                          + gage + '&referred_module=sw&period=&begin_date=' + start + '&end_date=' + stop)
+    # tsv = response.read().decode('utf8')
+    # tsv = StringIO(tsv)
+    #
+    # df = pd.read_csv(tsv, sep='\t', header=27, index_col=False, parse_dates=[2], date_parser=dataparse, skiprows=[27])
+    # df.columns = ['Agency', 'Site', 'Time', 'Discharge', 'DischargeQualification']
+    # df = df[df.DischargeQualification == 'A']
+    # df.to_csv('/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/public/needthis.csv')
     return df
 
 
