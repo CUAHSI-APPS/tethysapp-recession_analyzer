@@ -239,7 +239,7 @@ def peakdet(v, delta, x=None):
 
 
 def getSite():
-    tree = etree.parse('/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/public/Elder_C_2000-2017.xml')
+    tree = etree.parse('/usr/local/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/public/Elder_C_2000-2017.xml')
     root = tree.getroot()
 
     for element in root.iter():
@@ -250,7 +250,7 @@ def getSite():
                 return element.text
 
 def getTimeSeries():
-    tree = etree.parse('/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/public/Elder_C_2000-2017.xml')
+    tree = etree.parse('/usr/local/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/public/Elder_C_2000-2017.xml')
     root = tree.getroot()
     nodata = "-9999"  # default NoData value. The actual NoData value is read from the XML noDataValue tag
     x_value = []

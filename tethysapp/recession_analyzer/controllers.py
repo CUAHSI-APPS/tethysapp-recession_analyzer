@@ -127,14 +127,14 @@ def home(request):
         df = pd.DataFrame(data=np.transpose(dfinfo), columns=['Gage', 'a', 'a0', 'b', 'q'])
         flow_df = pd.DataFrame(data=np.transpose(flow_info), columns=['Gage', 'Time', 'Flow rate'])
 
-        new_file_path = "/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/templates/recession_analyzer/flowdata.html"
+        new_file_path = "/usr/local/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/templates/recession_analyzer/flowdata.html"
         flow_df.to_html(new_file_path)
         newline = '{% extends "recession_analyzer/base.html" %}\n{% load tethys_gizmos %}\n{% block app_content %}'
         line_prepender(new_file_path, newline)
         newline = '{% endblock %}'
         line_appender(new_file_path, newline)
 
-        new_file_path = "/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/templates/recession_analyzer/dataframe.html"
+        new_file_path = "/usr/local/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/templates/recession_analyzer/dataframe.html"
         df.to_html(new_file_path)
         newline = '{% extends "recession_analyzer/base.html" %}\n{% load tethys_gizmos %}\n{% block app_content %}'
         line_prepender(new_file_path, newline)
