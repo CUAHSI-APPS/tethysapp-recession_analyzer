@@ -20,14 +20,16 @@ import sys
 from scipy import stats as sp
 from scipy import optimize as op
 import time
+import requests
 
 
-def recessionExtract(gageName, start, stop, ante=10, alph=0.90, window=3,
+def recessionExtract(gageName, res_ids, start, stop, ante=10, alph=0.90, window=3,
                      selectivity=100, minLen=5, option=1, nonlin_fit=False):
     sitesDict = {}
     startStopDict = {}
+    res_index = 0
     for site in gageName:
-        d = getTimeSeries()
+        d = getTimeSeries(res_ids[res_index])
         dateandtime = pd.to_datetime(d['Time'])
         d = pd.DataFrame(d['Discharge'].values, columns=[site], index=pd.DatetimeIndex(dateandtime))
         selector = (d[site].max() - d[site].min()) / selectivity
@@ -134,7 +136,7 @@ def recessionExtract(gageName, start, stop, ante=10, alph=0.90, window=3,
         sitesDict[site] = d
 
         startStopDict[site] = (startVec, endVec)
-
+        res_index += 1
     return sitesDict, startStopDict
 
 
@@ -238,8 +240,10 @@ def peakdet(v, delta, x=None):
     return array(maxtab), array(mintab)
 
 
-def getSite():
-    tree = etree.parse('/usr/local/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/public/Elder_C_2000-2017.xml')
+def getSite(res_id):
+    temp_dir = RecessionAnalyzer.get_app_workspace().path
+    file_path = temp_dir + '/id/' + res_id + '.xml'
+    tree = etree.parse(file_path)
     root = tree.getroot()
 
     for element in root.iter():
@@ -249,8 +253,10 @@ def getSite():
             if tag == 'siteName':
                 return element.text
 
-def getTimeSeries():
-    tree = etree.parse('/usr/local/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/public/Elder_C_2000-2017.xml')
+def getTimeSeries(res_id):
+    temp_dir = RecessionAnalyzer.get_app_workspace().path
+    file_path = temp_dir + '/id/' + res_id + '.xml'
+    tree = etree.parse(file_path)
     root = tree.getroot()
     nodata = "-9999"  # default NoData value. The actual NoData value is read from the XML noDataValue tag
     x_value = []

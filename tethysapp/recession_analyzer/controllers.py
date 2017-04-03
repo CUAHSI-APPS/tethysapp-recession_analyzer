@@ -10,17 +10,45 @@ import os
 import cPickle as pickle
 import simplejson as json
 from datetime import datetime
+import requests
+import zipfile2 as zipfile
 
 import urllib
-from io import StringIO
+import io
 
 @login_required()
 def home(request):
     """
     Controller for the app home page.
     """
+
     gage_names = []
-    gage_names.append(getSite())
+    select_gage_options_tuple = []
+
+    # This is new
+    temp_dir = RecessionAnalyzer.get_app_workspace().path
+    #res_ids = request.GET.getlist('WofUri')
+    res_ids = []
+    res_ids.append('cuahsi-wdc-2017-04-03-30616779')
+    res_ids.append('cuahsi-wdc-2017-04-03-30650403')
+    res_ids.append('cuahsi-wdc-2017-04-03-30705857')
+    for res_id in res_ids:
+        url_zip = 'http://qa-webclient-solr.azurewebsites.net/CUAHSI/HydroClient/WaterOneFlowArchive/' + res_id + '/zip'
+        r = requests.get(url_zip, verify=False)
+        z = zipfile.ZipFile(io.BytesIO(r.content))
+        file_list = z.namelist()
+
+        for file in file_list:
+            file_data = z.read(file)
+            file_path = temp_dir + '/id/' + res_id + '.xml'
+            with open(file_path, 'wb') as f:
+                f.write(file_data)
+
+        gage_name = getSite(res_id)
+        gage_names.append(gage_name)
+        select_gage_options_tuple.append((gage_name, gage_name))
+    # New stuff ends here
+
     concave_initial = False
     nonlinear_fitting_initial = False
     rec_sense_initial = 1
@@ -30,7 +58,7 @@ def home(request):
     #select_gage_options_initial = ['11476500']
     select_gage_options_initial = gage_names
     #select_gage_options_tuple = [('11476500', '11476500'), ('11477000', '11477000')]
-    select_gage_options_tuple = [(getSite(), getSite())]
+    #select_gage_options_tuple = [(getSite(res_id), getSite(res_id))]
     abJson = ''
     seriesDict = {}
     scatter_plot_view = []
@@ -92,7 +120,7 @@ def home(request):
         min_length = float(min_length)
         selectivity = float(rec_sense) * 500
 
-        sitesDict, startStopDict = recessionExtract(gage_names, start, stop,
+        sitesDict, startStopDict = recessionExtract(gage_names, res_ids, start, stop,
                                                     ante=10, alph=0.90, window=3,
                                                     selectivity=selectivity,
                                                     minLen=min_length, option=1,
