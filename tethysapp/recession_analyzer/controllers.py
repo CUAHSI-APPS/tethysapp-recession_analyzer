@@ -29,7 +29,7 @@ def home(request):
     temp_dir = RecessionAnalyzer.get_app_workspace().path
     #res_ids = request.GET.getlist('WofUri')
     res_ids = []
-    res_ids.append('cuahsi-wdc-2017-04-03-30616779')
+    # res_ids.append('cuahsi-wdc-2017-04-03-30616779')
     res_ids.append('cuahsi-wdc-2017-04-03-30650403')
     res_ids.append('cuahsi-wdc-2017-04-03-30705857')
     for res_id in res_ids:
