@@ -2,7 +2,7 @@ from tethys_sdk.gizmos import DatePicker, MapView, MVLayer, MVView, TextInput, B
     ScatterPlot, ToggleSwitch, RangeSlider, TimeSeries, PlotView, SelectInput, TableView
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .model import recessionExtract, createAbJson, createStatsInfo
+from .model import recessionExtract, createAbJson, createStatsInfo, getSite
 import pandas as pd
 import numpy as np
 from .app import RecessionAnalyzer
@@ -10,28 +10,59 @@ import os
 import cPickle as pickle
 import simplejson as json
 from datetime import datetime
+import requests
+import zipfile2 as zipfile
 
 import urllib
-from io import StringIO
+import io
 
 @login_required()
 def home(request):
     """
     Controller for the app home page.
     """
-    gages_initial = ['11477000', '11476500']
-    start_initial = '2000-01-01'
-    stop_initial = '2015-01-01'
+
+
+    gage_names = []
+    select_gage_options_tuple = []
+
+    # This is new
+    temp_dir = RecessionAnalyzer.get_app_workspace().path
+    #res_ids = request.GET.getlist('WofUri')
+    res_ids = []
+    res_ids.append('cuahsi-wdc-2017-04-03-30616779')
+    res_ids.append('cuahsi-wdc-2017-04-03-30650403')
+    res_ids.append('cuahsi-wdc-2017-04-03-30705857')
+    for res_id in res_ids:
+        url_zip = 'http://qa-webclient-solr.azurewebsites.net/CUAHSI/HydroClient/WaterOneFlowArchive/' + res_id + '/zip'
+        r = requests.get(url_zip, verify=False)
+        z = zipfile.ZipFile(io.BytesIO(r.content))
+        file_list = z.namelist()
+
+        for file in file_list:
+            file_data = z.read(file)
+            file_path = temp_dir + '/id/' + res_id + '.xml'
+            with open(file_path, 'wb') as f:
+                f.write(file_data)
+
+        gage_name = getSite(res_id)
+        gage_names.append(gage_name)
+        select_gage_options_tuple.append((gage_name, gage_name))
+    # New stuff ends here
+
+
     concave_initial = False
     nonlinear_fitting_initial = False
     rec_sense_initial = 1
     min_length_initial = 4
     antecedent_moisture_initial = 1
     lag_start_initial = 0
-    # select_gage_options_initial = ['11476500']
-    select_gage_options_initial = ''
-    # select_gage_options_tuple = [('11476500', '11476500'), ('11477000', '11477000')]
-    select_gage_options_tuple = []
+
+    #select_gage_options_initial = ['11476500']
+    select_gage_options_initial = gage_names
+    #select_gage_options_tuple = [('11476500', '11476500'), ('11477000', '11477000')]
+    #select_gage_options_tuple = [(getSite(res_id), getSite(res_id))]
+
     abJson = ''
     seriesDict = {}
     scatter_plot_view = []
@@ -92,7 +123,7 @@ def home(request):
         post = pickle.load(open(new_file_path[:-4] + '.p', 'r'))
         
         submitted = True
-        gage_names = post.getlist("gages_input")
+
         gage_json = json.dumps(gage_names)
         start = post['start_input']
         stop = post['stop_input']
@@ -104,7 +135,7 @@ def home(request):
         min_length = float(min_length)
         selectivity = float(rec_sense) * 500
 
-        sitesDict, startStopDict = recessionExtract(gage_names, start, stop,
+        sitesDict, startStopDict = recessionExtract(gage_names, res_ids, start, stop,
                                                     ante=10, alph=0.90, window=3,
                                                     selectivity=selectivity,
                                                     minLen=min_length, option=1,
@@ -139,14 +170,14 @@ def home(request):
         df = pd.DataFrame(data=np.transpose(dfinfo), columns=['Gage', 'a', 'a0', 'b', 'q'])
         flow_df = pd.DataFrame(data=np.transpose(flow_info), columns=['Gage', 'Time', 'Flow rate'])
 
-        new_file_path = "/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/templates/recession_analyzer/flowdata.html"
+        new_file_path = "/usr/local/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/templates/recession_analyzer/flowdata.html"
         flow_df.to_html(new_file_path)
         newline = '{% extends "recession_analyzer/base.html" %}\n{% load tethys_gizmos %}\n{% block app_content %}'
         line_prepender(new_file_path, newline)
         newline = '{% endblock %}'
         line_appender(new_file_path, newline)
 
-        new_file_path = "/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/templates/recession_analyzer/dataframe.html"
+        new_file_path = "/usr/local/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/templates/recession_analyzer/dataframe.html"
         df.to_html(new_file_path)
         newline = '{% extends "recession_analyzer/base.html" %}\n{% load tethys_gizmos %}\n{% block app_content %}'
         line_prepender(new_file_path, newline)
