@@ -7,19 +7,15 @@
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script type="text/javascript">
     var gages = [];
-
     function showValue(newValue, rangex) {
         document.getElementById(rangex).innerHTML=newValue;
     }
-
     function setGages(gagesArray) {
         gages = gagesArray;
     }
-
     function filename() {
         return "{{ abJson }}".toJSON()
     }
-
     function updateSeries(currGage, type) {
         for (i = 0; i < gages.length; i++) {
             var x = document.getElementById(type + gages[i]);
@@ -30,7 +26,6 @@
         y.style.visibility = 'visible';
         y.style.display = 'block';
     }
-
     function updatePlots(gage) {
         updateSeries(gage, 'plot');
         updateSeries(gage, 'AB');
@@ -50,7 +45,7 @@
             {% gizmo toggle_switch nonlinear_fitting_options %}
 
 
-        {% csrf_token %}
+            {% csrf_token %}
             <br/>
             <strong> Peak extract = <span id="rec_sense_initial">{{ rec_sense_initial }} </span></strong>
             {% gizmo range_slider rec_sense_options %}
@@ -66,56 +61,64 @@
         </form>
     </div>
     {% if submitted %}
-        <div class="col-md-9">
-            <form method="post">
-                {% csrf_token %}
-                <div class="row">
-                    <div class="col-xs-5">
-                        {% gizmo select_input select_gage_options %}
-                    </div>
-                    <div class="col-xs-3">
-                        <br>
-                        <a href="{% url 'recession_analyzer:dataframe' %}" class="btn btn-primary">Download a-b data</a>
-                    </div>
-                    <div class="col-xs-3">
-                        <br>
-                        <a href="{% url 'recession_analyzer:flowdata' %}" class="btn btn-primary">Download flow rate data</a>
-                    </div>
+    <div class="col-md-9">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-xs-5">
+                    {% gizmo select_input select_gage_options %}
                 </div>
-                {% for plot in scatter_plot_view %}
-                    <div class="row">
-                        <div class="col-md-6" id="AB{{ plot.attributes.id }}">
-                            {% gizmo plot_view plot %}
-                        </div>
-                        <div class="col-md-6" id="table{{ plot.attributes.id }}">
-                            {% gizmo table_view ab_stats %}
-                        </div>
-                    </div>
-                {% endfor %}
-                {% for plot in line_plot_view %}
-                    <div class="row">
-                        <div class="col-md-12" id="plot{{ plot.attributes.id }}">
-                            {% gizmo plot_view plot %}
-                        </div>
-                    </div>
-                {% endfor %}
-            </form>
-        </div>
+                <div class="col-xs-3">
+                    <br>
+                    <a href="{% url 'recession_analyzer:dataframe' %}" class="btn btn-primary">Download a-b data</a>
+                </div>
+                <div class="col-xs-3">
+                    <br>
+                    <a href="{% url 'recession_analyzer:flowdata' %}" class="btn btn-primary">Download flow rate data</a>
+                </div>
+            </div>
+
+            {% for plot in scatter_plot_view22 %}
+            <div class="row">
+                <div class="col-md-6" id="AB{{ plot.plot_object.attributes }}">
+                    {% gizmo plot %}
+
+                </div>
+                <p></p>
+                <div class="col-md-6" id="table{{ plot.plot_object.attributes }}">
+                    {% gizmo table_view ab_stats %}
+                </div>
+            </div>
+            {% endfor %}
+
+
+            {% for plot in line_plot_view22 %}
+            <div class="row">
+                <div class="col-md-12" id="plot{{ plot.plot_object.attributes}}">
+                    {% gizmo plot %}
+                </div>
+            </div>
+            {% endfor %}
+
+
+        </form>
+    </div>
     {% endif %}
-    <script type="text/javascript">
+     <script type="text/javascript">
         var jsonString = "{{ gage_json }}".replace(/&quot;/g, "\"");
         var workingJson = JSON.parse(jsonString);
         setGages(workingJson);
         updatePlots(gages[0]);
     </script>
-</div>
 
+
+</div>
 
 
 {% endblock %}
 
 {% block scripts %}
-<link href='https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css' rel="stylesheet">
 {{ block.super }}
+<link href='https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css' rel="stylesheet">
 {% endblock %}
 

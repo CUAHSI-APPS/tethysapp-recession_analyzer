@@ -10,7 +10,7 @@ app_class = 'recession_analyzer.app:RecessionAnalyzer'
 app_package_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tethysapp', app_package)
 
 ### Python Dependencies ###
-dependencies = []
+dependencies = ['simplejson']
 
 setup(
     name=release_package,

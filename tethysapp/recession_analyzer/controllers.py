@@ -1,5 +1,8 @@
 from tethys_sdk.gizmos import DatePicker, MapView, MVLayer, MVView, TextInput, Button, ButtonGroup, LinePlot, \
-    ScatterPlot, ToggleSwitch, RangeSlider, TimeSeries, PlotView, SelectInput, TableView
+    ScatterPlot, ToggleSwitch, RangeSlider, TimeSeries, SelectInput, TableView, BarPlot
+    # PlotView is deprecated as of Tethys 1.2
+    # PlotView
+
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .model import recessionExtract, createAbJson, createStatsInfo, getSite
@@ -11,7 +14,8 @@ import cPickle as pickle
 import simplejson as json
 from datetime import datetime
 import requests
-import zipfile2 as zipfile
+# import zipfile2 as zipfile
+import zipfile
 
 import urllib
 import io
@@ -21,24 +25,43 @@ def home(request):
     """
     Controller for the app home page.
     """
+    print 'start'
+    print datetime.now().time()
+    gages_initial = []
+    start_initial = '2018-1-30'
+    stop_initial = '2018-2-2'
 
-
+    timeseries_plot = []
+    scatter_array = []
+    scatter_plot_view = []
     gage_names = []
     select_gage_options_tuple = []
 
     # This is new
     temp_dir = RecessionAnalyzer.get_app_workspace().path
-    #res_ids = request.GET.getlist('WofUri')
-    res_ids = []
-    res_ids.append('cuahsi-wdc-2017-04-03-30616779')
-    res_ids.append('cuahsi-wdc-2017-04-03-30650403')
-    res_ids.append('cuahsi-wdc-2017-04-03-30705857')
+    res_ids = request.GET.getlist('WofUri')
+    # res_ids = []
+    # res_ids.append('cuahsi-wdc-2017-04-03-30616779')
+    # res_ids.append('cuahsi-wdc-2017-04-03-30650403')
+    # res_ids.append('cuahsi-wdc-2017-04-03-30705857')
+    print 'getting cuahsi ids'
+    print datetime.now().time()
     for res_id in res_ids:
-        url_zip = 'http://qa-webclient-solr.azurewebsites.net/CUAHSI/HydroClient/WaterOneFlowArchive/' + res_id + '/zip'
+        # Check domain of host. This code assumes app will be hosted on a hydroshare server
+        app_host = request.META['HTTP_HOST']
+        if 'appsdev.hydroshare' in app_host:
+            url_zip = 'http://qa-hiswebclient.azurewebsites.net/CUAHSI/HydroClient/WaterOneFlowArchive/' \
+                      + res_id + '/zip'
+        else:
+            url_zip = 'http://data.cuahsi.org/CUAHSI/HydroClient/WaterOneFlowArchive/' \
+                      + res_id + '/zip'
+
         r = requests.get(url_zip, verify=False)
         z = zipfile.ZipFile(io.BytesIO(r.content))
         file_list = z.namelist()
-
+        # Create id directory if it does not exist
+        if not os.path.exists(temp_dir+'/id'):
+            os.makedirs(temp_dir+'/id')
         for file in file_list:
             file_data = z.read(file)
             file_path = temp_dir + '/id/' + res_id + '.xml'
@@ -50,7 +73,8 @@ def home(request):
         select_gage_options_tuple.append((gage_name, gage_name))
     # New stuff ends here
 
-
+    print 'done cuahsi data'
+    print datetime.now().time()
     concave_initial = False
     nonlinear_fitting_initial = False
     rec_sense_initial = 1
@@ -65,17 +89,20 @@ def home(request):
 
     abJson = ''
     seriesDict = {}
-    scatter_plot_view = []
-    line_plot_view = []
+    scatter_plot_view22 = []
+    line_plot_view22 = []
     context = {}
     gage_json = ''
     ab_stats = buildStatTable({'stats': []})
     submitted = False
 
-
-
-    sites = pd.read_csv('/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/public/huc_18.tsv', sep='\t', header=30,
+    print 'reading sites files'
+    print datetime.now().time()
+    sites = pd.read_csv(temp_dir+'/app_files/huc_18.tsv', sep='\t', header=30,
                         index_col=False, skiprows=[31])
+
+    # sites = pd.read_csv('/usr/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/public/huc_18.tsv', sep='\t', header=30,
+    #                     index_col=False, skiprows=[31])
     sites = sites[sites.site_tp_cd == 'ST']
     names = sites.station_nm
 
@@ -85,12 +112,12 @@ def home(request):
     gages_options_options_dict = dict(zip(values, text))
 
 
-
     # "Analyze recessions" button has been pressed
     # this stores new set of analysis parameters
     # and performs recession analysis, stores data in dictionaries
     # creates a new dropdown box with user gages
-
+    print 'done with stuff before post'
+    print datetime.now().time()
     if request.POST and 'analyze' in request.POST:
 
         # PRESERVE THE PREVIOUS STATE #
@@ -98,21 +125,21 @@ def home(request):
         gages_initial = request.POST.getlist("gages_input")
         start_initial = request.POST['start_input']
         stop_initial = request.POST['stop_input']
-        
+
         if 'concave_input' in request.POST:
             concave_initial = True
         else:
             concave_initial = False
-        
+
         if 'nonlinear_fitting_input' in request.POST:
             nonlinear_fitting_initial = True
         else:
             nonlinear_fitting_initial = False
-        
+
         rec_sense_initial = request.POST['rec_sense_input']
         min_length_initial = request.POST['min_length_input']
         lag_start_initial = request.POST['lag_start_input']
-        
+
         antecedent_moisture_initial = request.POST['antecedent_moisture_input']
 
         ########################################
@@ -121,7 +148,7 @@ def home(request):
         new_file_path = os.path.join(app_workspace.path, 'current_plot.txt')
         pickle.dump(request.POST, open(new_file_path[:-4] + '.p', 'w'))
         post = pickle.load(open(new_file_path[:-4] + '.p', 'r'))
-        
+
         submitted = True
 
         gage_json = json.dumps(gage_names)
@@ -170,19 +197,23 @@ def home(request):
         df = pd.DataFrame(data=np.transpose(dfinfo), columns=['Gage', 'a', 'a0', 'b', 'q'])
         flow_df = pd.DataFrame(data=np.transpose(flow_info), columns=['Gage', 'Time', 'Flow rate'])
 
-        new_file_path = "/usr/local/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/templates/recession_analyzer/flowdata.html"
-        flow_df.to_html(new_file_path)
-        newline = '{% extends "recession_analyzer/base.html" %}\n{% load tethys_gizmos %}\n{% block app_content %}'
-        line_prepender(new_file_path, newline)
-        newline = '{% endblock %}'
-        line_appender(new_file_path, newline)
+        # new_file_path = "/usr/local/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/templates/recession_analyzer/flowdata.html"
 
-        new_file_path = "/usr/local/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/templates/recession_analyzer/dataframe.html"
+        new_file_path = temp_dir+"/calculated_data/flowdata.html"
+        flow_df.to_html(new_file_path)
+        # newline = '{% extends "recession_analyzer/base.html" %}\n{% load tethys_gizmos %}\n{% block app_content %}'
+        # line_prepender(new_file_path, newline)
+        # newline = '{% endblock %}'
+        # line_appender(new_file_path, newline)
+
+        # new_file_path = "/usr/local/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/templates/recession_analyzer/dataframe.html"
+
+        new_file_path = temp_dir+"/calculated_data/dataframe.html"
         df.to_html(new_file_path)
-        newline = '{% extends "recession_analyzer/base.html" %}\n{% load tethys_gizmos %}\n{% block app_content %}'
-        line_prepender(new_file_path, newline)
-        newline = '{% endblock %}'
-        line_appender(new_file_path, newline)
+        # newline = '{% extends "recession_analyzer/base.html" %}\n{% load tethys_gizmos %}\n{% block app_content %}'
+        # line_prepender(new_file_path, newline)
+        # newline = '{% endblock %}'
+        # line_appender(new_file_path, newline)
 
         # FIXME: Throw error here if len(gage_names) == 0
 
@@ -195,29 +226,37 @@ def home(request):
             tsinds = ts.index
 
             series = []
-            series.append({'name': ' ', 'color': '#0066ff',
+            series.append({'name': 'Series',
                            'data': zip(flow[tsinds[0]:startVec[0]].index, flow[tsinds[0]:startVec[0]])})
-            series.append({'name': ' ', 'color': '#ff6600',
+            series.append({'name': ' Series',
                            'data': zip(flow[startVec[0]:endVec[0]].index, flow[startVec[0]:endVec[0]])})
             for i in np.arange(0, len(startVec) - 1):
-                series.append({'name': ' ', 'color': '#0066ff',
+                series.append({'name': ' Series',
                                'data': zip(flow[endVec[i]:startVec[i + 1]].index, flow[endVec[i]:startVec[i + 1]])})
-                series.append({'name': ' ', 'color': '#ff6600',
+                series.append({'name': ' Series',
                                'data': zip(flow[startVec[i+1]:endVec[i+1]].index, flow[startVec[i+1]:endVec[i+1]])})
 
-            series.append({'name': ' ', 'color': '#0066ff',
+            series.append({'name': ' hello',
                            'data': zip(flow[endVec[-1]:tsinds[-1]].index, flow[endVec[-1]:tsinds[-1]])})
 
             seriesDict[gage] = series
-            line_plot_view.append(buildFlowTimeSeriesPlot(series=seriesDict[gage], name=gage))
+            line_plot_view22.append(buildFlowTimeSeriesPlot(series=seriesDict[gage], name=gage))
+            # line_plot_view=buildFlowTimeSeriesPlot(series=seriesDict[gage], name=gage)
+
 
             avals = ts['A0n'][ts['A0n'] > 0].values
             bvals = ts['Bn'][ts['Bn'] > 0].values
-            tuplelist = zip(avals, bvals)
-            scatter_plot_view.append(buildRecParamPlot(tuplelist=tuplelist, name=gage))
+            # tuplelist = zip(avals, bvals)
+
+            tuplelist=[list(a) for a in zip(avals,bvals)]
+            scatter_plot_view22.append(buildRecParamPlot(tuplelist=tuplelist, name=gage))
+
+            # scatter_plot_view22 = buildRecParamPlot(tuplelist=tuplelist, name=gage)
+
 
         stats_dict = createStatsInfo(abJson)
         ab_stats = buildStatTable(stats_dict)
+
 
     gages_options = SelectInput(display_text='Select gage(s)',
                                 name='gages_input',
@@ -269,6 +308,37 @@ def home(request):
                                       options=select_gage_options_tuple,
                                       attributes={"onchange": "updatePlots(this.value);"})
 
+
+    # It appears the gizmos need a non arrayed chart in order to load properly
+
+    female_dataset = {
+        'name': 'Female',
+        'color': '#ff6600',
+        'data': [
+            [161.2, 51.6], [167.5, 59.0], [159.5, 49.2], [157.0, 63.0],
+
+        ]
+    }
+
+    scatter_plot_view1 = ScatterPlot(
+        width='500px',
+        height='500px',
+        engine='highcharts',
+        title='Scatter Plot',
+        subtitle='Scatter Plot',
+        x_axis_title='Height',
+        x_axis_units='cm',
+        y_axis_title='Weight',
+        y_axis_units='kg',
+
+        series=[
+            female_dataset
+        ]
+    )
+    test_plot = scatter_plot_view1
+
+
+
     context.update({'rec_sense_initial': rec_sense_initial,
                     'antecedent_moisture_initial': antecedent_moisture_initial,
                     'lag_start_initial': lag_start_initial,
@@ -281,14 +351,18 @@ def home(request):
                     'antecedent_moisture_options': antecedent_moisture_options,
                     'lag_start_options': lag_start_options,
                     'rec_sense_options': rec_sense_options,
-                    'line_plot_view': line_plot_view,
+
+                    'line_plot_view22': line_plot_view22,
+
                     'ab_stats': ab_stats,
-                    'scatter_plot_view': scatter_plot_view,
+                    'scatter_plot_view22': scatter_plot_view22,
                     'select_gage_options': select_gage_options,
                     'abJson': abJson,
                     'seriesDict': seriesDict,
                     'gages_options': gages_options,
                     'start_options': start_options,
+                    'test_plot':test_plot,
+
                     'stop_options': stop_options})
 
     return render(request, 'recession_analyzer/home.html', context)
@@ -308,99 +382,166 @@ def line_appender(filename, line):
 
 
 def buildFlowTimeSeriesPlot(series, name):
-    highcharts_object = {
-        'chart': {
-            'zoomType': 'x'
-        },
-        'title': {
-            'text': 'Flow time series'
-        },
-        'subtitle': {
-            'text': name
-        },
-        'legend': {
-            'layout': 'vertical',
-            'align': 'right',
-            'verticalAlign': 'middle',
-            'borderWidth': 0,
-            'enabled': False
-        },
-        'xAxis': {
-            'title': {
-                'enabled': True,
-                'text': 'time',
-                'offset': 35
-            },
-            'type': 'datetime',
-            'tickLength': 10
-        },
-        'yAxis': {
-            'title': {
-                'enabled': True,
-                'text': 'Discharge [cfs]'
-            }
-        },
-        'tooltip': {
-            'pointFormat': '{point.y} cfs',
-            'valueDecimals': 2,
-            'xDateFormat': '%d %b %Y %H:%M'
-        },
-        'series': series
-    }
+    # highcharts_object = {
+    #     'chart': {
+    #         'zoomType': 'x'
+    #     },
+    #     'title': {
+    #         'text': 'Flow time series'
+    #     },
+    #     'subtitle': {
+    #         'text': name
+    #     },
+    #     'legend': {
+    #         'layout': 'vertical',
+    #         'align': 'right',
+    #         'verticalAlign': 'middle',
+    #         'borderWidth': 0,
+    #         'enabled': False
+    #     },
+    #     'xAxis': {
+    #         'title': {
+    #             'enabled': True,
+    #             'text': 'time',
+    #             'offset': 35
+    #         },
+    #         'type': 'datetime',
+    #         'tickLength': 10
+    #     },
+    #     'yAxis': {
+    #         'title': {
+    #             'enabled': True,
+    #             'text': 'Discharge [cfs]'
+    #         }
+    #     },
+    #     'tooltip': {
+    #         'pointFormat': '{point.y} cfs',
+    #         'valueDecimals': 2,
+    #         'xDateFormat': '%d %b %Y %H:%M'
+    #     },
+    #     'series': series
+    # }
+    #
+    # return TimeSeries(highcharts_object=highcharts_object,
+    #                 width='70%',
+    #                 height='300px',
+    #                 attributes='id=' + name)
+    print series
+    timeseries_plot1 = TimeSeries(
+        # height='500px',
+        # width='500px',
+        engine='highcharts',
+        title='Flow time series',
+        subtitle=name,
+        y_axis_title='Discharge',
+        y_axis_units='cfs',
+        series=series,
+        attributes=name
+    )
 
-    return PlotView(highcharts_object=highcharts_object,
-                    width='70%',
-                    height='300px',
-                    attributes='id=' + name)
+
+    return timeseries_plot1
+    # highcharts_object=highcharts_object,
+    #                   width='70%',
+    #                   height='300px',
+    #                   attributes='id=' + name)
 
 
 def buildRecParamPlot(tuplelist, name):
-    scatter_highchart = {
-        'chart': {
-            'type': 'scatter',
-            'zoomType': 'xy'
-        },
-        'title': {
-            'text': 'Recession parameters'
-        },
-        'subtitle': {
-            'text': name
-        },
-        'legend': {
-            'layout': 'vertical',
-            'align': 'right',
-            'verticalAlign': 'middle',
-            'borderWidth': 0,
-            'enabled': False
-        },
-        'exporting': {
-            'enabled': True
-        },
-        'tooltip': {
-            'pointFormat': 'b={point.y:,.2f}, a={point.x:,.2f}'
-        },
-        'xAxis': {
-            'title': {
-                'enabled': True,
-                'text': 'a',
-                'offset': 35
-            },
-            'type': 'logarithmic',
-            'tickLength': 10
-        },
-        'yAxis': {
-            'title': {
-                'enabled': True,
-                'text': 'b'
-            }
-        },
-        'series': [{'name': ' ', 'data': tuplelist}]
+    # scatter_highchart = {
+    #     'chart': {
+    #         'type': 'scatter',
+    #         'zoomType': 'xy'
+    #     },
+    #     'title': {
+    #         'text': 'Recession parameters'
+    #     },
+    #     'subtitle': {
+    #         'text': name
+    #     },
+    #     'legend': {
+    #         'layout': 'vertical',
+    #         'align': 'right',
+    #         'verticalAlign': 'middle',
+    #         'borderWidth': 0,
+    #         'enabled': False
+    #     },
+    #     'exporting': {
+    #         'enabled': True
+    #     },
+    #     'tooltip': {
+    #         'pointFormat': 'b={point.y:,.2f}, a={point.x:,.2f}'
+    #     },
+    #     'xAxis': {
+    #         'title': {
+    #             'enabled': True,
+    #             'text': 'a',
+    #             'offset': 35
+    #         },
+    #         'type': 'logarithmic',
+    #         'tickLength': 10
+    #     },
+    #     'yAxis': {
+    #         'title': {
+    #             'enabled': True,
+    #             'text': 'b'
+    #         }
+    #     },
+    #     'series': [{'name': ' ', 'data': tuplelist}]
+    # }
+    #
+    # return ScatterPlot(highcharts_object=scatter_highchart,
+    #                 width='33%',
+    #                 height='300px',
+    #                 attributes='id=' + name)
+    actual_data = {
+        'name': 'data',
+        'data':tuplelist
     }
 
-    return PlotView(highcharts_object=scatter_highchart,
-                    width='33%',
-                    height='300px',
-                    attributes='id=' + name)
+
+    scatter_plot_view122 = ScatterPlot(
+        # width='500px',
+        # height='500px',
+        engine='highcharts',
+        title='Recession parameters',
+        subtitle=name,
+        x_axis_title='x-axis',
+        y_axis_title='y-axis',
+        attributes=name,
+
+        series=[
+            actual_data,
+
+        ]
+    )
+    return scatter_plot_view122
+
+    # print tuplelist
+    # return ScatterPlot(
+    #     series=[male_dataset],
+    #     # series=[{'name': ' ', 'data': tuplelist}],
+    #                    width='500px',
+    #                    height='500px',
+    #                    engine='highcharts',
+    #                    title='Scatter Plot',
+    #                    subtitle='Scatter Plot',
+    #                    x_axis_title='Height',
+    #                    x_axis_units='cm',
+    #                    y_axis_title='Weight',
+    #                    y_axis_units='kg',
+    #                    )
+
+    # return ScatterPlot(series=[{'name': ' ', 'data': [[2,3],[4,5]]}],
+    #                    engine='highcharts',
+    #                    title='Recession parameters',
+    #                    width='33%',
+    #                    height='300px',
+    #                    x_axis_title='Fixing Scatter plot',
+    #                    x_axis_units='m',
+    #                    y_axis_title='test2',
+    #                    y_axis_units='m'
+    #                    )
 
 
 def buildStatTable(stats_info):
@@ -450,7 +591,7 @@ def buildStatPlot(categories, series):
         'series': series
     }
 
-    return PlotView(highcharts_object=stats_highchart,
+    return BarPlot(highcharts_object=stats_highchart,
                     width='33%',
                     height='300px',
                     attributes='id=')
@@ -462,7 +603,16 @@ def dataframe(request):
     Controller for dataframe page.
     """
 
-    context = {}
+    temp_dir = RecessionAnalyzer.get_app_workspace().path
+
+    # new_file_path = "/usr/local/lib/tethys/src/tethys_apps/tethysapp/recession_analyzer/templates/recession_analyzer/dataframe.html"
+
+    new_file_path = temp_dir + "/calculated_data/dataframe.html"
+
+
+    with open(new_file_path, 'r') as f:
+        data = f.read()
+    context = {'data':data}
     return render(request, 'recession_analyzer/dataframe.html', context)
 
 
@@ -471,8 +621,13 @@ def flowdata(request):
     """
     Controller for dataframe page.
     """
+    temp_dir = RecessionAnalyzer.get_app_workspace().path
 
-    context = {}
+    new_file_path = temp_dir + "/calculated_data/flowdata.html"
+
+    with open(new_file_path, 'r') as f:
+        data = f.read()
+    context = {'data': data}
     return render(request, 'recession_analyzer/flowdata.html', context)
 
 
