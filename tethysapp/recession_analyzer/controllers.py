@@ -236,7 +236,7 @@ def home(request):
                 series.append({'name': ' Series',
                                'data': zip(flow[startVec[i+1]:endVec[i+1]].index, flow[startVec[i+1]:endVec[i+1]])})
 
-            series.append({'name': ' hello',
+            series.append({'name': ' Series',
                            'data': zip(flow[endVec[-1]:tsinds[-1]].index, flow[endVec[-1]:tsinds[-1]])})
 
             seriesDict[gage] = series
