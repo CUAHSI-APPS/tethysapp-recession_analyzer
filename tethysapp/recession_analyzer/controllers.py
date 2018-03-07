@@ -335,7 +335,7 @@ def home(request):
             female_dataset
         ]
     )
-    test_plot = scatter_plot_view1
+    my_plot = scatter_plot_view1
 
 
 
@@ -361,7 +361,8 @@ def home(request):
                     'seriesDict': seriesDict,
                     'gages_options': gages_options,
                     'start_options': start_options,
-                    'test_plot':test_plot,
+                    # 'my_plot':my_plot,
+
 
                     'stop_options': stop_options})
 
