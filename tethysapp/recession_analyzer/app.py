@@ -31,8 +31,8 @@ class RecessionAnalyzer(TethysAppBase):
                            controller='recession_analyzer.controllers.dataframe'),
                     UrlMap(name='flowdata',
                            url='flowdata',
-                           controller='recession_analyzer.controllers.flowdata')
-        ]
+                           controller='recession_analyzer.controllers.flowdata'),
+         ]
 
         return url_maps
 

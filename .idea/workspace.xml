@@ -2,7 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f79e6b9a-70da-4f9e-a733-89138c253a28" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/setup.py" afterPath="$PROJECT_DIR$/setup.py" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/tethysapp/recession_analyzer/app.py" afterPath="$PROJECT_DIR$/tethysapp/recession_analyzer/app.py" />
+      <change beforePath="$PROJECT_DIR$/tethysapp/recession_analyzer/controllers.py" afterPath="$PROJECT_DIR$/tethysapp/recession_analyzer/controllers.py" />
+      <change beforePath="$PROJECT_DIR$/tethysapp/recession_analyzer/public/js/main.js" afterPath="$PROJECT_DIR$/tethysapp/recession_analyzer/public/js/main.js" />
+      <change beforePath="$PROJECT_DIR$/tethysapp/recession_analyzer/templates/recession_analyzer/home.html" afterPath="$PROJECT_DIR$/tethysapp/recession_analyzer/templates/recession_analyzer/home.html" />
+      <change beforePath="$PROJECT_DIR$/tethysapp/recession_analyzer/workspaces/app_workspace/calculated_data/dataframe.html" afterPath="$PROJECT_DIR$/tethysapp/recession_analyzer/workspaces/app_workspace/calculated_data/dataframe.html" />
+      <change beforePath="$PROJECT_DIR$/tethysapp/recession_analyzer/workspaces/app_workspace/calculated_data/flowdata.html" afterPath="$PROJECT_DIR$/tethysapp/recession_analyzer/workspaces/app_workspace/calculated_data/flowdata.html" />
+      <change beforePath="$PROJECT_DIR$/tethysapp/recession_analyzer/workspaces/user_workspaces/mbayles2/current_plot.p" afterPath="$PROJECT_DIR$/tethysapp/recession_analyzer/workspaces/user_workspaces/mbayles2/current_plot.p" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -12,37 +19,47 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.54551584">
+    <splitter split-orientation="horizontal" split-proportion="0.29992992">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file leaf-file-name="controllers.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/controllers.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="6552">
-                  <caret line="364" column="0" lean-forward="false" selection-start-line="364" selection-start-column="0" selection-end-line="364" selection-end-column="0" />
+                <state relative-caret-position="170">
+                  <caret line="123" column="21" lean-forward="false" selection-start-line="123" selection-start-column="8" selection-end-line="123" selection-end-column="21" />
                   <folding>
                     <element signature="e#0#199#0" expanded="true" />
-                    <element signature="e#14985#15118#0" expanded="false" />
-                    <element signature="e#15160#15259#0" expanded="false" />
-                    <element signature="e#19865#20100#0" expanded="false" />
-                    <element signature="e#20146#21189#0" expanded="false" />
-                    <element signature="e#22143#22282#0" expanded="false" />
+                    <element signature="e#14758#14891#0" expanded="false" />
+                    <element signature="e#14933#15032#0" expanded="false" />
+                    <element signature="e#21909#22048#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="home.html" pinned="false" current-in-tab="false">
+          <file leaf-file-name="home.html" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/templates/recession_analyzer/home.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1602">
-                  <caret line="89" column="22" lean-forward="false" selection-start-line="89" selection-start-column="22" selection-end-line="89" selection-end-column="22" />
+                <state relative-caret-position="1188">
+                  <caret line="72" column="61" lean-forward="false" selection-start-line="72" selection-start-column="42" selection-end-line="72" selection-end-column="61" />
+                  <folding>
+                    <element signature="n#style#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="base.html" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/templates/recession_analyzer/base.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="91">
+                  <caret line="11" column="15" lean-forward="false" selection-start-line="11" selection-start-column="15" selection-end-line="11" selection-end-column="15" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="setup.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="setup.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/setup.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="162">
@@ -57,11 +74,9 @@
           <file leaf-file-name="main.js" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/public/js/main.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="288">
-                  <caret line="20" column="61" lean-forward="false" selection-start-line="20" selection-start-column="11" selection-end-line="20" selection-end-column="61" />
-                  <folding>
-                    <element signature="n#!!doc" expanded="true" />
-                  </folding>
+                <state relative-caret-position="0">
+                  <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -73,19 +88,27 @@
           <file leaf-file-name="main.js" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/public/js/main.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="234">
-                  <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-                  <folding>
-                    <element signature="n#!!doc" expanded="true" />
-                  </folding>
+                <state relative-caret-position="0">
+                  <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+                  <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="model.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="app.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/app.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="327">
+                  <caret line="33" column="81" lean-forward="false" selection-start-line="33" selection-start-column="81" selection-end-line="33" selection-end-column="81" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/model.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="468">
+                <state relative-caret-position="18">
                   <caret line="26" column="0" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
                   <folding>
                     <element signature="e#48#103#0" expanded="true" />
@@ -102,18 +125,18 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="controllers.py" pinned="false" current-in-tab="false">
+          <file leaf-file-name="controllers.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/controllers.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="3654">
-                  <caret line="203" column="0" lean-forward="false" selection-start-line="203" selection-start-column="0" selection-end-line="203" selection-end-column="0" />
+                <state relative-caret-position="-1216">
+                  <caret line="261" column="99" lean-forward="false" selection-start-line="261" selection-start-column="86" selection-end-line="261" selection-end-column="99" />
                   <folding>
                     <element signature="e#0#199#0" expanded="true" />
-                    <element signature="e#14985#15118#0" expanded="false" />
-                    <element signature="e#15160#15259#0" expanded="false" />
-                    <element signature="e#19865#20100#0" expanded="false" />
-                    <element signature="e#20146#21189#0" expanded="false" />
-                    <element signature="e#22143#22282#0" expanded="false" />
+                    <element signature="e#14758#14891#0" expanded="false" />
+                    <element signature="e#14933#15032#0" expanded="false" />
+                    <element signature="e#19631#19866#0" expanded="false" />
+                    <element signature="e#19912#20955#0" expanded="false" />
+                    <element signature="e#21909#22048#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
@@ -125,19 +148,12 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>gages_initial</find>
-      <find>start_initial</find>
-      <find>flowdata</find>
       <find>plot_view</find>
       <find>Plot</find>
       <find>getSite</find>
       <find>select_input gages_options</find>
       <find>gages_options_options</find>
-      <find>select_gage_options_tuple</find>
-      <find>gage_names</find>
       <find>ab_stats</find>
-      <find>select_gage_options</find>
-      <find>buildRecParamPlot</find>
       <find>line_plot_view</find>
       <find>scatter_plot_view</find>
       <find>timeseries_plot</find>
@@ -151,6 +167,17 @@
       <find>buildStatTable</find>
       <find>scatter_plot_view1</find>
       <find>test_plot</find>
+      <find>gage_json</find>
+      <find>Analyze Rec</find>
+      <find>Analyze rec</find>
+      <find>setGages</find>
+      <find>buildRecParamPlot</find>
+      <find>select_gage_options_tuple</find>
+      <find>gages_input</find>
+      <find>post</find>
+      <find>select_gage_options</find>
+      <find>gage_names</find>
+      <find>gages_initial</find>
     </findStrings>
     <replaceStrings>
       <replace>scatter_plot_view</replace>
@@ -162,13 +189,14 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/tethysapp/recession_analyzer/public/js/main.js" />
         <option value="$PROJECT_DIR$/tethysapp/recession_analyzer/templates/recession_analyzer/dataframe.html" />
         <option value="$PROJECT_DIR$/tethysapp/recession_analyzer/templates/recession_analyzer/flowdata.html" />
         <option value="$PROJECT_DIR$/tethysapp/recession_analyzer/templates/recession_analyzer/base.html" />
+        <option value="$PROJECT_DIR$/setup.py" />
+        <option value="$PROJECT_DIR$/tethysapp/recession_analyzer/public/js/main.js" />
+        <option value="$PROJECT_DIR$/tethysapp/recession_analyzer/app.py" />
         <option value="$PROJECT_DIR$/tethysapp/recession_analyzer/templates/recession_analyzer/home.html" />
         <option value="$PROJECT_DIR$/tethysapp/recession_analyzer/controllers.py" />
-        <option value="$PROJECT_DIR$/setup.py" />
       </list>
     </option>
   </component>
@@ -179,10 +207,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="79" />
+    <option name="x" value="135" />
     <option name="y" value="24" />
-    <option name="width" value="1483" />
-    <option name="height" value="731" />
+    <option name="width" value="1427" />
+    <option name="height" value="762" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -234,7 +262,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="79" y="24" width="1483" height="731" extended-state="0" />
+    <frame x="135" y="24" width="1427" height="762" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -272,21 +300,13 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/setup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="12" column="27" lean-forward="false" selection-start-line="12" selection-start-column="27" selection-end-line="12" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/templates/recession_analyzer/home.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1692">
           <caret line="94" column="46" lean-forward="false" selection-start-line="94" selection-start-column="46" selection-end-line="94" selection-end-column="46" />
-          <folding />
+          <folding>
+            <element signature="n#style#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -294,7 +314,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="20" lean-forward="false" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -302,7 +321,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
           <caret line="11" column="15" lean-forward="false" selection-start-line="11" selection-start-column="15" selection-end-line="11" selection-end-column="15" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -310,9 +328,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
           <caret line="20" column="61" lean-forward="false" selection-start-line="20" selection-start-column="11" selection-end-line="20" selection-end-column="61" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -322,11 +338,9 @@
           <caret line="364" column="0" lean-forward="false" selection-start-line="364" selection-start-column="0" selection-end-line="364" selection-end-column="0" />
           <folding>
             <element signature="e#0#199#0" expanded="true" />
-            <element signature="e#14985#15118#0" expanded="false" />
-            <element signature="e#15160#15259#0" expanded="false" />
-            <element signature="e#19865#20100#0" expanded="false" />
-            <element signature="e#20146#21189#0" expanded="false" />
-            <element signature="e#22143#22282#0" expanded="false" />
+            <element signature="e#14758#14891#0" expanded="false" />
+            <element signature="e#14933#15032#0" expanded="false" />
+            <element signature="e#21909#22048#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -335,7 +349,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="17" column="16" lean-forward="false" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -343,7 +356,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="20" lean-forward="false" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -379,7 +391,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1692">
           <caret line="94" column="46" lean-forward="false" selection-start-line="94" selection-start-column="46" selection-end-line="94" selection-end-column="46" />
-          <folding />
+          <folding>
+            <element signature="n#style#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -387,7 +401,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="20" lean-forward="false" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -395,7 +408,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
           <caret line="11" column="15" lean-forward="false" selection-start-line="11" selection-start-column="15" selection-end-line="11" selection-end-column="15" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -403,9 +415,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
           <caret line="20" column="61" lean-forward="false" selection-start-line="20" selection-start-column="11" selection-end-line="20" selection-end-column="61" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -415,11 +425,9 @@
           <caret line="364" column="0" lean-forward="false" selection-start-line="364" selection-start-column="0" selection-end-line="364" selection-end-column="0" />
           <folding>
             <element signature="e#0#199#0" expanded="true" />
-            <element signature="e#14985#15118#0" expanded="false" />
-            <element signature="e#15160#15259#0" expanded="false" />
-            <element signature="e#19865#20100#0" expanded="false" />
-            <element signature="e#20146#21189#0" expanded="false" />
-            <element signature="e#22143#22282#0" expanded="false" />
+            <element signature="e#14758#14891#0" expanded="false" />
+            <element signature="e#14933#15032#0" expanded="false" />
+            <element signature="e#21909#22048#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -428,7 +436,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="17" column="16" lean-forward="false" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -436,7 +443,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="20" lean-forward="false" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -472,7 +478,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1692">
           <caret line="94" column="46" lean-forward="false" selection-start-line="94" selection-start-column="46" selection-end-line="94" selection-end-column="46" />
-          <folding />
+          <folding>
+            <element signature="n#style#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -480,7 +488,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="20" lean-forward="false" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -488,7 +495,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="20" lean-forward="false" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -496,7 +502,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
           <caret line="11" column="15" lean-forward="false" selection-start-line="11" selection-start-column="15" selection-end-line="11" selection-end-column="15" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -504,9 +509,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
           <caret line="20" column="61" lean-forward="false" selection-start-line="20" selection-start-column="11" selection-end-line="20" selection-end-column="61" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -516,11 +519,9 @@
           <caret line="624" column="0" lean-forward="false" selection-start-line="624" selection-start-column="0" selection-end-line="624" selection-end-column="0" />
           <folding>
             <element signature="e#0#199#0" expanded="true" />
-            <element signature="e#14985#15118#0" expanded="false" />
-            <element signature="e#15160#15259#0" expanded="false" />
-            <element signature="e#19865#20100#0" expanded="false" />
-            <element signature="e#20146#21189#0" expanded="false" />
-            <element signature="e#22143#22282#0" expanded="false" />
+            <element signature="e#14758#14891#0" expanded="false" />
+            <element signature="e#14933#15032#0" expanded="false" />
+            <element signature="e#21909#22048#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -529,7 +530,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -565,7 +565,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1566">
           <caret line="87" column="35" lean-forward="false" selection-start-line="87" selection-start-column="35" selection-end-line="87" selection-end-column="35" />
-          <folding />
+          <folding>
+            <element signature="n#style#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -573,9 +575,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="72">
           <caret line="8" column="5" lean-forward="false" selection-start-line="8" selection-start-column="5" selection-end-line="8" selection-end-column="5" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -585,11 +585,9 @@
           <caret line="243" column="86" lean-forward="false" selection-start-line="243" selection-start-column="86" selection-end-line="243" selection-end-column="86" />
           <folding>
             <element signature="e#0#199#0" expanded="true" />
-            <element signature="e#14985#15118#0" expanded="false" />
-            <element signature="e#15160#15259#0" expanded="false" />
-            <element signature="e#19865#20100#0" expanded="false" />
-            <element signature="e#20146#21189#0" expanded="false" />
-            <element signature="e#22143#22282#0" expanded="false" />
+            <element signature="e#14758#14891#0" expanded="false" />
+            <element signature="e#14933#15032#0" expanded="false" />
+            <element signature="e#21909#22048#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -626,7 +624,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1566">
           <caret line="87" column="35" lean-forward="false" selection-start-line="87" selection-start-column="35" selection-end-line="87" selection-end-column="35" />
-          <folding />
+          <folding>
+            <element signature="n#style#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -634,9 +634,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="144">
           <caret line="8" column="5" lean-forward="false" selection-start-line="8" selection-start-column="5" selection-end-line="8" selection-end-column="5" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -646,11 +644,9 @@
           <caret line="243" column="86" lean-forward="false" selection-start-line="243" selection-start-column="86" selection-end-line="243" selection-end-column="86" />
           <folding>
             <element signature="e#0#199#0" expanded="true" />
-            <element signature="e#14985#15118#0" expanded="false" />
-            <element signature="e#15160#15259#0" expanded="false" />
-            <element signature="e#19865#20100#0" expanded="false" />
-            <element signature="e#20146#21189#0" expanded="false" />
-            <element signature="e#22143#22282#0" expanded="false" />
+            <element signature="e#14758#14891#0" expanded="false" />
+            <element signature="e#14933#15032#0" expanded="false" />
+            <element signature="e#21909#22048#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -661,11 +657,9 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#199#0" expanded="true" />
-            <element signature="e#14985#15118#0" expanded="false" />
-            <element signature="e#15160#15259#0" expanded="false" />
-            <element signature="e#19865#20100#0" expanded="false" />
-            <element signature="e#20146#21189#0" expanded="false" />
-            <element signature="e#22143#22282#0" expanded="false" />
+            <element signature="e#14758#14891#0" expanded="false" />
+            <element signature="e#14933#15032#0" expanded="false" />
+            <element signature="e#21909#22048#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -692,9 +686,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="594">
           <caret line="33" column="5" lean-forward="false" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -702,7 +694,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
           <caret line="15" column="12" lean-forward="true" selection-start-line="15" selection-start-column="12" selection-end-line="15" selection-end-column="12" />
-          <folding />
+          <folding>
+            <element signature="n#style#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -716,29 +710,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/public/js/main.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="20" column="61" lean-forward="false" selection-start-line="20" selection-start-column="11" selection-end-line="20" selection-end-column="61" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/public/css/main.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="17" column="16" lean-forward="false" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/templates/recession_analyzer/base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="11" column="15" lean-forward="false" selection-start-line="11" selection-start-column="15" selection-end-line="11" selection-end-column="15" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -746,7 +721,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="20" lean-forward="false" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -754,7 +728,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="20" lean-forward="false" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -762,36 +735,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/templates/recession_analyzer/home.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1602">
-          <caret line="89" column="22" lean-forward="false" selection-start-line="89" selection-start-column="22" selection-end-line="89" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/controllers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6552">
-          <caret line="364" column="0" lean-forward="false" selection-start-line="364" selection-start-column="0" selection-end-line="364" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#199#0" expanded="true" />
-            <element signature="e#14985#15118#0" expanded="false" />
-            <element signature="e#15160#15259#0" expanded="false" />
-            <element signature="e#19865#20100#0" expanded="false" />
-            <element signature="e#20146#21189#0" expanded="false" />
-            <element signature="e#22143#22282#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="468">
+        <state relative-caret-position="18">
           <caret line="26" column="0" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
           <folding>
             <element signature="e#48#103#0" expanded="true" />
@@ -813,6 +762,53 @@
           <caret line="12" column="85" lean-forward="false" selection-start-line="12" selection-start-column="85" selection-end-line="12" selection-end-column="85" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/templates/recession_analyzer/base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="91">
+          <caret line="11" column="15" lean-forward="false" selection-start-line="11" selection-start-column="15" selection-end-line="11" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/public/js/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="327">
+          <caret line="33" column="81" lean-forward="false" selection-start-line="33" selection-start-column="81" selection-end-line="33" selection-end-column="81" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/controllers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="123" column="21" lean-forward="false" selection-start-line="123" selection-start-column="8" selection-end-line="123" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#199#0" expanded="true" />
+            <element signature="e#14758#14891#0" expanded="false" />
+            <element signature="e#14933#15032#0" expanded="false" />
+            <element signature="e#21909#22048#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tethysapp/recession_analyzer/templates/recession_analyzer/home.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1188">
+          <caret line="72" column="61" lean-forward="false" selection-start-line="72" selection-start-column="42" selection-end-line="72" selection-end-column="61" />
+          <folding>
+            <element signature="n#style#0;n#div#1;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>

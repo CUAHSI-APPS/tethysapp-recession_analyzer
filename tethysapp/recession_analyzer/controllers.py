@@ -117,12 +117,12 @@ def home(request):
     # and performs recession analysis, stores data in dictionaries
     # creates a new dropdown box with user gages
     print 'done with stuff before post'
-    print datetime.now().time()
     if request.POST and 'analyze' in request.POST:
 
         # PRESERVE THE PREVIOUS STATE #
 
         gages_initial = request.POST.getlist("gages_input")
+        print gages_initial
         start_initial = request.POST['start_input']
         stop_initial = request.POST['stop_input']
 
@@ -241,17 +241,14 @@ def home(request):
 
             seriesDict[gage] = series
             line_plot_view22.append(buildFlowTimeSeriesPlot(series=seriesDict[gage], name=gage))
-            # line_plot_view=buildFlowTimeSeriesPlot(series=seriesDict[gage], name=gage)
 
 
             avals = ts['A0n'][ts['A0n'] > 0].values
             bvals = ts['Bn'][ts['Bn'] > 0].values
-            # tuplelist = zip(avals, bvals)
 
             tuplelist=[list(a) for a in zip(avals,bvals)]
             scatter_plot_view22.append(buildRecParamPlot(tuplelist=tuplelist, name=gage))
 
-            # scatter_plot_view22 = buildRecParamPlot(tuplelist=tuplelist, name=gage)
 
 
         stats_dict = createStatsInfo(abJson)
@@ -337,8 +334,6 @@ def home(request):
     )
     my_plot = scatter_plot_view1
 
-
-
     context.update({'rec_sense_initial': rec_sense_initial,
                     'antecedent_moisture_initial': antecedent_moisture_initial,
                     'lag_start_initial': lag_start_initial,
@@ -361,7 +356,7 @@ def home(request):
                     'seriesDict': seriesDict,
                     'gages_options': gages_options,
                     'start_options': start_options,
-                    # 'my_plot':my_plot,
+                    'my_plot':my_plot,
 
 
                     'stop_options': stop_options})
@@ -501,7 +496,7 @@ def buildRecParamPlot(tuplelist, name):
     }
 
 
-    scatter_plot_view122 = ScatterPlot(
+    scatter_plot_view = ScatterPlot(
         # width='500px',
         # height='500px',
         engine='highcharts',
@@ -513,10 +508,9 @@ def buildRecParamPlot(tuplelist, name):
 
         series=[
             actual_data,
-
         ]
     )
-    return scatter_plot_view122
+    return scatter_plot_view
 
     # print tuplelist
     # return ScatterPlot(

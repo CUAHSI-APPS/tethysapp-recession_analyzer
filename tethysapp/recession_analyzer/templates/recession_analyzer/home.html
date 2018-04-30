@@ -7,6 +7,7 @@
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script type="text/javascript">
     var gages = [];
+
     function showValue(newValue, rangex) {
         document.getElementById(rangex).innerHTML=newValue;
     }
@@ -17,6 +18,8 @@
         return "{{ abJson }}".toJSON()
     }
     function updateSeries(currGage, type) {
+        console.log(gages)
+        console.log(type + gages[0])
         for (i = 0; i < gages.length; i++) {
             var x = document.getElementById(type + gages[i]);
             x.style.visibility = 'hidden';
@@ -61,6 +64,7 @@
         </form>
     </div>
     {% if submitted %}
+    <div id="gage_list" style="display:none">{{gage_json}}</div>
     <div class="col-md-9">
         <form method="post">
             {% csrf_token %}
@@ -80,7 +84,7 @@
 
             {% for plot in scatter_plot_view22 %}
             <div class="row">
-                <div class="id=AB{{ plot.plot_object.attributes }}">
+                <div class="col-md-6" id="AB{{ plot.plot_object.attributes }}">
                     {% gizmo plot %}
 
                 </div>
@@ -106,6 +110,8 @@
     {% endif %}
      <script type="text/javascript">
         var jsonString = "{{ gage_json }}".replace(/&quot;/g, "\"");
+        console.log(jsonString)
+        console.log("bottom js")
         var workingJson = JSON.parse(jsonString);
         setGages(workingJson);
         updatePlots(gages[0]);
